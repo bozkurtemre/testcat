@@ -16,7 +16,7 @@
     "db:migrate": "pnpm --filter @testcat/desktop db:migrate"
   },
   "devDependencies": {
-    "turbo": "^2.9.18",
+    "turbo": "^2.10.4",
     "typescript": "^6.0.3"
   },
   "pnpm": {
