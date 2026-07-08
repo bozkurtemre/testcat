@@ -1,0 +1,507 @@
+#!/usr/bin/env node
+"use strict";
+
+const { execFileSync, spawnSync } = require("node:child_process");
+const { createHash } = require("node:crypto");
+const { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } = require("node:fs");
+const { homedir, tmpdir } = require("node:os");
+const { basename, dirname, join, resolve } = require("node:path");
+
+const root = __dirname;
+const agentRoot = join(root, "vendor", "agent-device");
+const agentBin = join(agentRoot, "bin", "agent-device.mjs");
+const version = "0.1.0";
+const upstreamVersion = "0.17.6";
+const runtimeDependencies = ["yaml"];
+
+function fail(message, code = 1) {
+  process.stderr.write(`${message}\n`);
+  process.exit(code);
+}
+
+function parseArgs(argv) {
+  const flags = {};
+  const positionals = [];
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i];
+    if (!arg.startsWith("--")) {
+      positionals.push(arg);
+      continue;
+    }
+    const eq = arg.indexOf("=");
+    if (eq > 0) {
+      flags[arg.slice(2, eq)] = arg.slice(eq + 1);
+      continue;
+    }
+    const key = arg.slice(2);
+    const next = argv[i + 1];
+    if (!next || next.startsWith("--")) {
+      flags[key] = true;
+    } else {
+      flags[key] = next;
+      i += 1;
+    }
+  }
+  return { flags, positionals };
+}
+
+function flag(flags, name, fallback = undefined) {
+  const value = flags[name];
+  return value === true || value == null ? fallback : String(value);
+}
+
+function requireFlag(flags, name) {
+  const value = flag(flags, name);
+  if (!value) fail(`missing required --${name}`);
+  return value;
+}
+
+function runnerEnv() {
+  const env = { ...process.env };
+  for (const [key, value] of Object.entries(process.env)) {
+    if (!key.startsWith("TESTCAT_DEVICE_")) continue;
+    const mapped = `AGENT_DEVICE_${key.slice("TESTCAT_DEVICE_".length)}`;
+    env[mapped] = value;
+  }
+  env.AGENT_DEVICE_PLATFORM = env.AGENT_DEVICE_PLATFORM || "ios";
+  env.AGENT_DEVICE_NO_UPDATE_NOTIFIER = env.AGENT_DEVICE_NO_UPDATE_NOTIFIER || "1";
+  const runnerBundleId =
+    env.AGENT_DEVICE_IOS_RUNNER_APP_BUNDLE_ID ||
+    env.AGENT_DEVICE_IOS_BUNDLE_ID ||
+    env.TESTCAT_DEVICE_IOS_RUNNER_APP_BUNDLE_ID ||
+    env.TESTCAT_DEVICE_IOS_BUNDLE_ID ||
+    "io.testcat.device.runner";
+  env.AGENT_DEVICE_IOS_BUNDLE_ID = runnerBundleId;
+  env.AGENT_DEVICE_IOS_RUNNER_APP_BUNDLE_ID = runnerBundleId;
+  env.AGENT_DEVICE_IOS_RUNNER_TEST_BUNDLE_ID =
+    env.AGENT_DEVICE_IOS_RUNNER_TEST_BUNDLE_ID ||
+    env.TESTCAT_DEVICE_IOS_RUNNER_TEST_BUNDLE_ID ||
+    `${runnerBundleId}.uitests`;
+  const stateScope = createHash("sha256")
+    .update(
+      [
+        upstreamVersion,
+        env.AGENT_DEVICE_IOS_TEAM_ID || "",
+        env.AGENT_DEVICE_IOS_PROVISIONING_PROFILE || "",
+        env.AGENT_DEVICE_IOS_BUNDLE_ID || "",
+        env.AGENT_DEVICE_IOS_RUNNER_APP_BUNDLE_ID || "",
+        env.AGENT_DEVICE_IOS_RUNNER_TEST_BUNDLE_ID || "",
+      ].join("\0"),
+    )
+    .digest("hex")
+    .slice(0, 12);
+  env.AGENT_DEVICE_STATE_DIR =
+    env.AGENT_DEVICE_STATE_DIR ||
+    env.TESTCAT_DEVICE_STATE_DIR ||
+    join(homedir(), ".testcat-device", "runtimes", stateScope);
+  return env;
+}
+
+function runAgent(args, options = {}) {
+  assertRuntimeReady();
+  const env = runnerEnv();
+  assertSigningReady(env);
+  const result = spawnSync(process.execPath, [agentBin, ...args], {
+    env,
+    stdio: options.stdio || "inherit",
+    encoding: options.encoding,
+    maxBuffer: options.maxBuffer || 64 * 1024 * 1024,
+  });
+  if (result.error) fail(result.error.message);
+  if (options.returnResult) return result;
+  process.exit(result.status == null ? 1 : result.status);
+}
+
+function missingRuntimeDependencies() {
+  return runtimeDependencies.filter((name) => {
+    try {
+      require.resolve(name, { paths: [agentRoot] });
+      return false;
+    } catch {
+      return true;
+    }
+  });
+}
+
+function installCommand() {
+  return `npm install --prefix ${agentRoot} --omit=dev --ignore-scripts --package-lock=false`;
+}
+
+function assertRuntimeReady() {
+  if (!existsSync(agentBin)) {
+    fail(`vendored agent-device runtime is missing at ${agentBin}`);
+  }
+  const missing = missingRuntimeDependencies();
+  if (missing.length) {
+    fail(
+      [
+        `vendored agent-device runtime dependencies are missing: ${missing.join(", ")}`,
+        `Run: ${installCommand()}`,
+      ].join("\n"),
+    );
+  }
+}
+
+function assertSigningReady(env) {
+  if (env.AGENT_DEVICE_IOS_TEAM_ID?.trim()) return;
+  fail(
+    [
+      "physical iOS runner signing is not configured: missing TESTCAT_DEVICE_IOS_TEAM_ID",
+      "Set Settings > Physical Device Helper > Apple team id, then run `testcat-device prepare` again.",
+    ].join("\n"),
+  );
+}
+
+function waitMs(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function doctor() {
+  assertRuntimeReady();
+  process.stdout.write(
+    `testcat-device runtime OK (${runtimeDependencies.join(", ")})\n`,
+  );
+}
+
+function runJsonFile(cmd, args) {
+  const dir = mkdtempSync(join(tmpdir(), "testcat-device-"));
+  const out = join(dir, "out.json");
+  try {
+    execFileSync(cmd, [...args, "--json-output", out], {
+      stdio: ["ignore", "ignore", "pipe"],
+      encoding: "utf8",
+      maxBuffer: 16 * 1024 * 1024,
+    });
+    return JSON.parse(readFileSync(out, "utf8"));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+function listDevices(asJson) {
+  let payload;
+  try {
+    payload = runJsonFile("xcrun", ["devicectl", "list", "devices"]);
+  } catch (error) {
+    fail(`devicectl list devices failed: ${error.message}`);
+  }
+  const devices = (payload.result?.devices || [])
+    .map(normalizeDevice)
+    .filter(Boolean);
+  const body = {
+    running: devices.filter((device) => device.isBooted),
+    available: devices,
+    physical: devices,
+  };
+  if (asJson) {
+    process.stdout.write(`${JSON.stringify(body, null, 2)}\n`);
+    return;
+  }
+  for (const device of devices) {
+    process.stdout.write(
+      `${device.isBooted ? "Available" : "Unavailable"}  ${device.name}  ${device.runtime}  ${device.udid}\n`,
+    );
+  }
+}
+
+function normalizeDevice(raw) {
+  const hardware = raw.hardwareProperties || {};
+  const props = raw.deviceProperties || {};
+  const connection = raw.connectionProperties || {};
+  const platform = String(hardware.platform || "");
+  const type = String(hardware.deviceType || "");
+  if (platform !== "iOS") return null;
+  if (!/iphone|ipad/i.test(type)) return null;
+  const udid = String(hardware.udid || raw.identifier || "");
+  if (!udid) return null;
+  const paired = connection.pairingState === "paired";
+  const developerMode = props.developerModeStatus === "enabled";
+  const available = paired && developerMode;
+  const reasons = [];
+  if (!paired) reasons.push("device is not paired");
+  if (!developerMode) reasons.push("Developer Mode is not enabled");
+  return {
+    id: udid,
+    udid,
+    name: String(props.name || hardware.marketingName || type || "iOS Device"),
+    state: available ? "Available" : "Unavailable",
+    runtime: props.osVersionNumber ? `iOS ${props.osVersionNumber}` : "iOS",
+    isBooted: available,
+    kind: "physical",
+    provider: "testcat-device",
+    isAvailable: available,
+    availabilityReason: reasons.join("; ") || null,
+    connection: {
+      pairingState: connection.pairingState || null,
+      transportType: connection.transportType || null,
+      tunnelState: connection.tunnelState || null,
+    },
+    model: hardware.marketingName || hardware.productType || null,
+  };
+}
+
+function appBundleId(appPath) {
+  const absolute = resolve(appPath);
+  const plist = join(absolute, "Info.plist");
+  if (existsSync(plist)) {
+    try {
+      return execFileSync("/usr/libexec/PlistBuddy", [
+        "-c",
+        "Print :CFBundleIdentifier",
+        plist,
+      ], { encoding: "utf8" }).trim();
+    } catch {
+      // Fall through to basename hint.
+    }
+  }
+  if (/\.ipa$/i.test(absolute) && existsSync(absolute)) {
+    const dir = mkdtempSync(join(tmpdir(), "testcat-device-ipa-"));
+    try {
+      const listing = execFileSync("/usr/bin/unzip", ["-Z1", absolute], {
+        encoding: "utf8",
+        maxBuffer: 16 * 1024 * 1024,
+      });
+      const infoPath = listing
+        .split(/\r?\n/)
+        .find((entry) => /^Payload\/[^/]+\.app\/Info\.plist$/.test(entry));
+      if (infoPath) {
+        const raw = execFileSync("/usr/bin/unzip", ["-p", absolute, infoPath], {
+          maxBuffer: 16 * 1024 * 1024,
+        });
+        const tmpPlist = join(dir, "Info.plist");
+        writeFileSync(tmpPlist, raw);
+        return execFileSync("/usr/libexec/PlistBuddy", [
+          "-c",
+          "Print :CFBundleIdentifier",
+          tmpPlist,
+        ], { encoding: "utf8" }).trim();
+      }
+    } catch {
+      // Fall through to basename hint.
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+  return basename(appPath).replace(/\.(app|ipa)$/i, "");
+}
+
+function withTarget(args, udid) {
+  return [...args, "--platform", "ios", "--udid", udid];
+}
+
+function forwardMapped(argv) {
+  const [command, ...rest] = argv;
+  const { flags, positionals } = parseArgs(rest);
+  const udid = flag(flags, "udid");
+
+  switch (command) {
+    case "prepare":
+      runAgent(withTarget(["prepare", "ios-runner", "--timeout", "240000"], requireFlag(flags, "udid")));
+      return;
+    case "install": {
+      const app = requireFlag(flags, "app");
+      const hint = flag(flags, "bundle-id", appBundleId(app));
+      runAgent(withTarget(["install", hint, app], requireFlag(flags, "udid")));
+      return;
+    }
+    case "reinstall": {
+      const app = requireFlag(flags, "app");
+      const hint = flag(flags, "bundle-id", appBundleId(app));
+      runAgent(withTarget(["reinstall", hint, app], requireFlag(flags, "udid")));
+      return;
+    }
+    case "launch": {
+      const bundleId = flag(flags, "bundle-id") || (flags.app ? appBundleId(String(flags.app)) : null);
+      if (!bundleId) fail("launch requires --bundle-id or --app");
+      const udid = requireFlag(flags, "udid");
+      // --relaunch terminates the target first, but XCUITest can only reach
+      // processes it launched — a store/TestFlight app that is not currently
+      // running makes that terminate step (and the whole launch) fail. Try
+      // the fresh relaunch first, then fall back to a plain open.
+      const relaunch = runAgent(withTarget(["open", bundleId, "--relaunch"], udid), {
+        returnResult: true,
+        stdio: "pipe",
+        encoding: "utf8",
+      });
+      if (relaunch.status === 0) {
+        process.stdout.write(relaunch.stdout || "");
+        process.exit(0);
+      }
+      runAgent(withTarget(["open", bundleId], udid));
+      return;
+    }
+    case "terminate": {
+      const bundleId = requireFlag(flags, "bundle-id");
+      runAgent(withTarget(["close", bundleId], requireFlag(flags, "udid")));
+      return;
+    }
+    case "describe-ui":
+    case "snapshot": {
+      const args = ["snapshot", "-i"];
+      if (flags.json) args.push("--json");
+      runAgent(withTarget(args, requireFlag(flags, "udid")));
+      return;
+    }
+    case "tap":
+    case "click": {
+      const target = flag(flags, "ref") || positionals[0];
+      if (target && /^@e\d+/.test(target)) {
+        runAgent(withTarget(["click", target], requireFlag(flags, "udid")));
+        return;
+      }
+      const x = flag(flags, "x") || positionals[0];
+      const y = flag(flags, "y") || positionals[1];
+      if (!x || !y) fail(`${command} requires --x and --y, or a snapshot ref`);
+      runAgent(withTarget(["press", x, y], requireFlag(flags, "udid")));
+      return;
+    }
+    case "fill": {
+      const ref = flag(flags, "ref") || positionals[0];
+      const text = flag(flags, "text") || positionals.slice(1).join(" ");
+      if (!ref || !text) fail("fill requires --ref and --text");
+      runAgent(withTarget(["fill", ref, text], requireFlag(flags, "udid")));
+      return;
+    }
+    case "type": {
+      const text = flag(flags, "text") || positionals.join(" ");
+      if (!text) fail("type requires --text");
+      runAgent(withTarget(["type", text], requireFlag(flags, "udid")));
+      return;
+    }
+    case "swipe": {
+      const x1 = flag(flags, "startX") || flag(flags, "x1") || positionals[0];
+      const y1 = flag(flags, "startY") || flag(flags, "y1") || positionals[1];
+      const x2 = flag(flags, "endX") || flag(flags, "x2") || positionals[2];
+      const y2 = flag(flags, "endY") || flag(flags, "y2") || positionals[3];
+      const durationMs = Math.round(Number(flag(flags, "duration", "0.25")) * 1000);
+      if (!x1 || !y1 || !x2 || !y2) fail("swipe requires start/end coordinates");
+      runAgent(withTarget(["swipe", x1, y1, x2, y2, String(durationMs)], requireFlag(flags, "udid")));
+      return;
+    }
+    case "scroll": {
+      const direction = flag(flags, "direction") || positionals[0] || "down";
+      const amount = flag(flags, "amount") || flag(flags, "pixels");
+      const args = ["scroll", direction];
+      if (amount) args.push("--pixels", amount);
+      runAgent(withTarget(args, requireFlag(flags, "udid")));
+      return;
+    }
+    case "press": {
+      const button = flag(flags, "button") || positionals[0];
+      if (!button) fail("press requires --button");
+      const map = {
+        home: ["home"],
+        "app-switcher": ["app-switcher"],
+        "swipe-to-home": ["home"],
+        back: ["back", "--system"],
+      };
+      const args = map[button];
+      if (!args) fail(`unsupported physical-device button: ${button}`);
+      runAgent(withTarget(args, requireFlag(flags, "udid")));
+      return;
+    }
+    case "screenshot": {
+      const out = flag(flags, "out") || flag(flags, "output") || positionals[0];
+      if (!out) fail("screenshot requires --out");
+      const args = ["screenshot", out];
+      const maxSize = flag(flags, "max-size") || flag(flags, "maxSize");
+      if (maxSize) args.push("--max-size", maxSize);
+      runAgent(withTarget(args, requireFlag(flags, "udid")));
+      return;
+    }
+    default:
+      fail(`unsupported testcat-device command: ${command || "(missing)"}`);
+  }
+}
+
+function screencast(rest) {
+  const { flags } = parseArgs(rest);
+  const udid = requireFlag(flags, "udid");
+  const fps = Math.max(1, Math.min(10, Number(flag(flags, "fps", "2")) || 2));
+  const maxSize = flag(flags, "max-size") || (flag(flags, "scale") ? "900" : "900");
+  const delay = Math.round(1000 / fps);
+  const env = runnerEnv();
+  if (!env.AGENT_DEVICE_IOS_TEAM_ID?.trim()) {
+    process.stderr.write(
+      [
+        "physical iOS runner signing is not configured: missing TESTCAT_DEVICE_IOS_TEAM_ID",
+        "Physical screencast will stay idle until this process is stopped.",
+      ].join("\n") + "\n",
+    );
+    setInterval(() => undefined, 60_000);
+    return;
+  }
+  const dir = mkdtempSync(join(tmpdir(), "testcat-device-cast-"));
+  let stopped = false;
+  const stop = () => {
+    stopped = true;
+  };
+  process.on("SIGTERM", stop);
+  process.on("SIGINT", stop);
+  try {
+    while (!stopped) {
+      const out = join(dir, `frame-${Date.now()}.png`);
+      const result = runAgent(
+        withTarget(["screenshot", out, "--max-size", maxSize], udid),
+        { stdio: ["ignore", "ignore", "ignore"], returnResult: true },
+      );
+      if (result.status === 0 && existsSync(out)) {
+        process.stdout.write(readFileSync(out));
+      }
+      rmSync(out, { force: true });
+      waitMs(delay);
+    }
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+function complete(rest) {
+  const { flags } = parseArgs(rest);
+  const status = requireFlag(flags, "status");
+  if (status !== "passed" && status !== "failed") {
+    fail("complete --status must be passed or failed");
+  }
+  const summary = flag(flags, "summary", "");
+  const marker = {
+    event: "testcat.run_complete",
+    ok: true,
+    runId: process.env.TESTCAT_RUN_ID || null,
+    status,
+    summary,
+    token: process.env.TESTCAT_RUN_COMPLETE_TOKEN || null,
+  };
+  process.stdout.write(`${JSON.stringify(marker)}\n`);
+}
+
+function main() {
+  const [command, ...rest] = process.argv.slice(2);
+  if (!command || command === "help" || command === "--help" || command === "-h") {
+    process.stdout.write(`testcat-device ${version} (vendored agent-device ${upstreamVersion})\n`);
+    process.stdout.write("Commands: list, prepare, install, reinstall, launch, terminate, describe-ui, tap, click, fill, type, swipe, scroll, press, screenshot, screencast, complete\n");
+    return;
+  }
+  if (command === "--version" || command === "version") {
+    process.stdout.write(`testcat-device ${version} (agent-device ${upstreamVersion})\n`);
+    return;
+  }
+  if (command === "doctor") {
+    doctor();
+    return;
+  }
+  if (command === "list") {
+    listDevices(rest.includes("--json"));
+    return;
+  }
+  if (command === "screencast") {
+    screencast(rest);
+    return;
+  }
+  if (command === "complete") {
+    complete(rest);
+    return;
+  }
+  forwardMapped([command, ...rest]);
+}
+
+main();

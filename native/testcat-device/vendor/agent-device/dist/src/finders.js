@@ -1,0 +1,1 @@
+import{findBestMatchesByLocator as e}from"./587.js";function o(o,r,t,_){return e(o,r,t,"boolean"==typeof _?{requireRect:_}:_)}export{normalizeRole,normalizeText,parseFindArgs}from"./587.js";export{o as findBestMatchesByLocator};

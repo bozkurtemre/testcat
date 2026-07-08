@@ -1,0 +1,43 @@
+name: Bug report
+description: Something in testcat doesn't work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+      placeholder: |
+        1. Created a test with …
+        2. Ran it with the Claude profile
+        3. Expected …, but …
+    validations:
+      required: true
+
+  - type: textarea
+    id: run-context
+    attributes:
+      label: Run context (if it concerns a test run)
+      description: Agent runtime + model, number of simulators, physical device or not, and the relevant lines from the run's chat output.
+      placeholder: |
+        Runtime/model: claude / sonnet, effort high
+        Simulators: 2 × iPhone Air (iOS 26.4)
+        Output: …
+    validations:
+      required: false
+
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: testcat version, macOS version, Xcode version
+      placeholder: testcat 0.1.0 · macOS 26.5 · Xcode 26.5
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: setup
+    attributes:
+      label: Setup guide
+      options:
+        - label: The in-app setup guide (Help → Setup guide) shows all checks green

@@ -1,0 +1,5 @@
+var e,t,r,s;let n,o=process.argv.slice(2);function c(e){return"--help"===e||"-h"===e}function i(e){import("../cli.js").then(({runCli:t})=>t(e)).catch(p)}function p(e){process.stderr.write(`${e instanceof Error?e.message:String(e)}
+`),process.exit(1)}1===(t=e=o).length&&("--version"===(r=t[0])||"-V"===r)&&(process.stdout.write(`0.17.6
+`),1)||0===e.length&&(import("../cli-help.js").then(({buildUsageText:e})=>{process.stdout.write(`${e()}
+`),process.exit(1)}).catch(p),1)||void 0!==(n=function(e){var t,r,s,n;switch(e.length){case 1:return"help"===(t=e[0])||c(t)?null:void 0;case 2:return r=e[0],s=e[1],"help"===r?s:(n=r,c(s)?n:void 0);default:return}}(s=e))&&(import("../cli-help.js").then(({buildCommandUsageText:e,buildUsageText:t})=>{var r;if(null===n)return void process.stdout.write(`${t()}
+`);let o=e("long-press"===(r=n)?"longpress":"metrics"===r?"perf":r);o?process.stdout.write(o):i(s)}).catch(p),1)||("mcp"!==o[0]||o.includes("--help")||o.includes("-h")?i(o):import("../server.js").then(({runAgentDeviceMcpServer:e})=>e()).catch(p));export{};

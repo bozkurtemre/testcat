@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      # Electron's binary isn't needed for typecheck/bundling — skip the download.
+      ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm typecheck
+
+      - run: pnpm build
+
+      - name: Logic checks
+        run: |
+          pnpm --filter @testcat/desktop exec tsx src/main/agent/spawn.check.ts
+          pnpm --filter @testcat/desktop exec tsx src/main/agent/ollama-direct.check.ts
+          pnpm --filter @testcat/desktop exec tsx src/main/agent/login-flow.check.ts
+          pnpm --filter @testcat/desktop exec tsx src/renderer/features/run/device-grid-state.check.ts

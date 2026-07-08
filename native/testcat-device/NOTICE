@@ -1,0 +1,9 @@
+testcat-device includes vendored portions of agent-device.
+
+agent-device
+Copyright (c) 2026 Callstack
+License: MIT
+Source: https://github.com/callstack/agent-device
+Package version: 0.17.6
+
+The Testcat CLI wrapper and command surface are maintained by Testcat.

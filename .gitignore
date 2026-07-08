@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+native/testcat-device/vendor/agent-device/package-lock.json
+
+# build output
+dist/
+out/
+release/
+.turbo/
+output/
+!native/testcat-device/vendor/agent-device/dist/
+!native/testcat-device/vendor/agent-device/dist/**
+!native/testcat-device/vendor/agent-device/ios-runner/**/*.xcodeproj/
+!native/testcat-device/vendor/agent-device/ios-runner/**/*.xcodeproj/**
+!native/testcat-device/vendor/agent-device/ios-runner/**/*.xcworkspace/
+!native/testcat-device/vendor/agent-device/ios-runner/**/*.xcworkspace/**
+
+# env
+.env
+.env.local
+
+# logs
+*.log
+npm-debug.log*
+
+# os
+.DS_Store
+
+# personal agent tooling — not part of the project
+.agents/
+.claude/
+skills-lock.json

@@ -1,0 +1,21 @@
+testcat-sim
+===========
+
+This is a fork of "baguette" by tddworks (https://github.com/tddworks/baguette),
+licensed under the Apache License 2.0 (see LICENSE).
+
+Changes made in this fork:
+- Removed the web/serve layer: the `serve` command, the HTTP+WebSocket server
+  (Infrastructure/Server), the WebSocket frame sink, the Hummingbird
+  dependencies, and all of Resources/Web (including /farm). testcat renders the
+  live simulator view in its own UI by consuming `testcat-sim stream`.
+- Removed the upstream test target, docs, CI, and changelog tooling.
+- Renamed the executable product to `testcat-sim`.
+- Added a `screencast` command — continuous live MJPEG to stdout. It runs the
+  existing MJPEG stream in an async command context so SimulatorKit framebuffer
+  callbacks are delivered without the (removed) web-server event loop; testcat's
+  live grid consumes it.
+
+The core simulator-control and framebuffer-stream functionality is unchanged.
+The names "baguette" and "tddworks" appear only to credit the origin as required
+by the Apache-2.0 attribution terms.

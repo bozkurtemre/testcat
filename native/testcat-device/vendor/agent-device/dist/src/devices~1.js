@@ -1,0 +1,1 @@
+import{hostname as o}from"node:os";async function e(){return"linux"!==process.platform?[]:[{platform:"linux",id:"local",name:o(),kind:"device",target:"desktop",booted:!0}]}export{e as listLinuxDevices};

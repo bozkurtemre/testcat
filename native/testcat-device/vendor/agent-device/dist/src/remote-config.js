@@ -1,0 +1,1 @@
+export{resolveRemoteConfigPath,resolveRemoteConfigProfile}from"./4723.js";

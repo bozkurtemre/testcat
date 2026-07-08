@@ -1,0 +1,1 @@
+import e from"node:os";import r from"node:path";function o(r){return r?.HOME?.trim()||e.homedir()}function t(e,n={}){return"~"===e?o(n.env):e.startsWith("~/")?r.join(o(n.env),e.slice(2)):e}function n(e,o={}){let s=t(e,o);return r.isAbsolute(s)?s:r.resolve(o.cwd??process.cwd(),s)}export{t as expandUserHomePath,n as resolveUserPath};

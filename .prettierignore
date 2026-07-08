@@ -1,0 +1,13 @@
+# Build outputs
+node_modules
+.turbo
+out
+dist
+release
+output
+native/testcat-sim/.build
+
+# Vendored / generated — keep upstream formatting
+native/testcat-device/vendor
+apps/desktop/src/main/store/migrations
+pnpm-lock.yaml

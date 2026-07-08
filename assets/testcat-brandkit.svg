@@ -1,0 +1,268 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+  <defs>
+    <linearGradient id="canvasGlow" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#202326"/>
+      <stop offset="0.42" stop-color="#111314"/>
+      <stop offset="1" stop-color="#0B0D0E"/>
+    </linearGradient>
+    <linearGradient id="mintWash" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#18352D"/>
+      <stop offset="1" stop-color="#3D8F73"/>
+    </linearGradient>
+    <linearGradient id="panelDim" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#171A1B"/>
+      <stop offset="1" stop-color="#111314"/>
+    </linearGradient>
+    <linearGradient id="panelCold" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#202326"/>
+      <stop offset="1" stop-color="#111314"/>
+    </linearGradient>
+    <linearGradient id="nightGlass" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0B0D0E"/>
+      <stop offset="0.55" stop-color="#111314"/>
+      <stop offset="1" stop-color="#18352D"/>
+    </linearGradient>
+    <pattern id="smallGrid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#F4F7F5" stroke-width="1" opacity="0.035"/>
+    </pattern>
+    <pattern id="fineGrid" width="12" height="12" patternUnits="userSpaceOnUse">
+      <path d="M 12 0 L 0 0 0 12" fill="none" stroke="#6CBFA6" stroke-width="1" opacity="0.08"/>
+    </pattern>
+    <pattern id="scanlines" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="1" fill="#F4F7F5" opacity="0.026"/>
+    </pattern>
+    <pattern id="dotField" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.35" fill="#6CBFA6" opacity="0.18"/>
+    </pattern>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+    <filter id="paperNoise" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.92" numOctaves="2" seed="9" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.06"/>
+      </feComponentTransfer>
+      <feBlend mode="screen" in2="SourceGraphic"/>
+    </filter>
+    <style>
+      .bg { fill: url(#canvasGlow); }
+      .panel { fill: url(#panelDim); stroke: #2A2E31; stroke-width: 1; rx: 8; }
+      .panel-cold { fill: url(#panelCold); stroke: #2A2E31; stroke-width: 1; rx: 8; }
+      .ink { fill: #0B0D0E; }
+      .mint { fill: #6CBFA6; }
+      .cream { fill: #F4F7F5; }
+      .muted { fill: #8D9491; }
+      .steel { fill: #C5A4E8; }
+      .coral { fill: #FF665C; }
+      .line { stroke: #383D40; stroke-opacity: 1; fill: none; }
+      .mint-line { stroke: #6CBFA6; stroke-opacity: 0.72; fill: none; }
+      .thin { stroke-width: 1; }
+      .med { stroke-width: 2; }
+      .text { font-family: "Plus Jakarta Sans", "Manrope", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .mono { font-family: "SFMono-Regular", "JetBrains Mono", "Menlo", monospace; }
+      .label { font-size: 13px; fill: #8D9491; }
+      .micro { font-size: 11px; fill: #5F6763; }
+      .h1 { font-size: 72px; font-weight: 760; fill: #F4F7F5; }
+      .h2 { font-size: 34px; font-weight: 680; fill: #F4F7F5; }
+      .body { font-size: 18px; fill: #C9CECB; }
+      .chip-text { font-size: 12px; fill: #F4F7F5; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1600" height="1200"/>
+  <rect width="1600" height="1200" fill="url(#smallGrid)" opacity="0.5"/>
+  <rect width="1600" height="1200" fill="url(#scanlines)" opacity="0.65"/>
+  <circle cx="1315" cy="154" r="320" fill="#6CBFA6" opacity="0.045"/>
+  <circle cx="236" cy="1044" r="260" fill="#C5A4E8" opacity="0.03"/>
+
+  <g class="text">
+    <text x="56" y="34" class="micro">TESTCAT BRAND SYSTEM / M0-M4 PRODUCT WORLD</text>
+    <text x="1435" y="34" text-anchor="end" class="micro">AGENT-RUN SIMULATOR QA</text>
+
+    <!-- Panel 1: logo cover -->
+    <g transform="translate(56 56)">
+      <rect class="panel" width="480" height="346.667"/>
+      <rect x="0" y="0" width="480" height="346.667" rx="8" fill="url(#fineGrid)" opacity="0.28"/>
+      <image href="testcat-dark.svg" x="50" y="62" width="132" height="132" preserveAspectRatio="xMidYMid meet"/>
+      <text x="208" y="132" class="h2">testcat</text>
+      <text x="211" y="164" class="body">AI simulator testing</text>
+      <path d="M 52 250 H 428" class="line thin"/>
+      <text x="52" y="290" class="label">watchful agent control</text>
+      <text x="52" y="312" class="micro">chat stream + live simulator grid</text>
+      <circle cx="424" cy="78" r="7" fill="#6CBFA6"/>
+      <circle cx="424" cy="102" r="7" fill="#F4B56F" opacity="0.85"/>
+      <circle cx="424" cy="126" r="7" fill="#FF665C" opacity="0.88"/>
+    </g>
+
+    <!-- Panel 2: construction -->
+    <g transform="translate(560 56)">
+      <rect class="panel-cold" width="480" height="346.667"/>
+      <rect width="480" height="346.667" rx="8" fill="url(#fineGrid)" opacity="0.55"/>
+      <text x="32" y="42" class="label">MARK CONSTRUCTION</text>
+      <g transform="translate(130 62)">
+        <circle cx="110" cy="110" r="108" fill="none" stroke="#6CBFA6" stroke-width="1.5" opacity="0.42"/>
+        <circle cx="110" cy="110" r="75" fill="none" stroke="#F4F7F5" stroke-width="1" opacity="0.16"/>
+        <path d="M 110 -4 V 224 M -4 110 H 224" stroke="#F4F7F5" stroke-width="1" opacity="0.2"/>
+        <rect x="30" y="30" width="160" height="160" fill="none" stroke="#6CBFA6" stroke-width="1" opacity="0.28"/>
+        <image href="testcat-dark.svg" x="44" y="44" width="132" height="132" opacity="0.92"/>
+      </g>
+      <path d="M 54 273 H 200 M 281 273 H 426" class="line thin"/>
+      <circle cx="240" cy="273" r="38" fill="none" stroke="#6CBFA6" stroke-width="1.3" opacity="0.75"/>
+      <text x="54" y="313" class="micro">cat = watchful tester</text>
+      <text x="281" y="313" class="micro">grid = simulator lab</text>
+    </g>
+
+    <!-- Panel 3: digital application -->
+    <g transform="translate(1064 56)">
+      <rect class="panel" width="480" height="346.667"/>
+      <text x="32" y="42" class="label">DESKTOP SURFACE</text>
+      <g transform="translate(34 70)" filter="url(#softShadow)">
+        <rect x="0" y="0" width="412" height="226" rx="10" fill="#111314" stroke="#383D40" stroke-opacity="1"/>
+        <rect x="0" y="0" width="412" height="34" rx="10" fill="#202326"/>
+        <circle cx="19" cy="17" r="4.5" fill="#FF665C"/>
+        <circle cx="37" cy="17" r="4.5" fill="#FFD47C"/>
+        <circle cx="55" cy="17" r="4.5" fill="#6CBFA6"/>
+        <text x="78" y="22" class="mono" font-size="11" fill="#8D9491">testcat://run/live</text>
+        <rect x="18" y="54" width="152" height="154" rx="8" fill="#171A1B" stroke="#2A2E31" stroke-opacity="1"/>
+        <rect x="30" y="68" width="96" height="10" rx="5" fill="#6CBFA6"/>
+        <rect x="30" y="92" width="118" height="8" rx="4" fill="#C9CECB" opacity="0.32"/>
+        <rect x="30" y="112" width="82" height="8" rx="4" fill="#8D9491" opacity="0.34"/>
+        <rect x="30" y="150" width="126" height="34" rx="8" fill="#111314" stroke="#3D8F73" stroke-opacity="0.7"/>
+        <text x="43" y="172" class="mono" font-size="11" fill="#6CBFA6">codex exec</text>
+        <g transform="translate(194 54)">
+          <rect width="86" height="70" rx="8" fill="#171A1B" stroke="#3D8F73" stroke-opacity="0.5"/>
+          <rect x="104" width="86" height="70" rx="8" fill="#171A1B" stroke="#3D8F73" stroke-opacity="0.35"/>
+          <rect y="84" width="86" height="70" rx="8" fill="#171A1B" stroke="#3D8F73" stroke-opacity="0.35"/>
+          <rect x="104" y="84" width="86" height="70" rx="8" fill="#171A1B" stroke="#3D8F73" stroke-opacity="0.5"/>
+          <path d="M 18 45 C 32 25, 48 58, 68 30" class="mint-line med"/>
+          <path d="M 122 35 H 170 M 146 13 V 57" stroke="#C5A4E8" stroke-width="1.4" opacity="0.58"/>
+          <circle cx="43" cy="118" r="16" fill="#18352D" opacity="0.95"/>
+          <circle cx="147" cy="119" r="20" fill="#FF665C" opacity="0.16"/>
+        </g>
+      </g>
+      <text x="34" y="320" class="micro">view-only monitoring grid; agent owns device control</text>
+    </g>
+
+    <!-- Panel 4: brand essence -->
+    <g transform="translate(56 426.667)">
+      <rect class="panel" width="480" height="346.667"/>
+      <rect width="480" height="346.667" rx="8" fill="url(#mintWash)" opacity="0.18"/>
+      <text x="36" y="54" class="label">BRAND ESSENCE</text>
+      <text x="36" y="142" font-size="56" font-weight="760" fill="#F4F7F5">Prompt in.</text>
+      <text x="36" y="202" font-size="56" font-weight="760" fill="#6CBFA6">Sims move.</text>
+      <path d="M 40 252 C 118 242, 160 286, 230 263 S 332 218, 428 252" fill="none" stroke="#6CBFA6" stroke-width="2" opacity="0.7"/>
+      <text x="38" y="306" class="body">Supervised agentic QA for iOS teams.</text>
+    </g>
+
+    <!-- Panel 5: color system -->
+    <g transform="translate(560 426.667)">
+      <rect class="panel-cold" width="480" height="346.667"/>
+      <text x="32" y="42" class="label">COLOR SYSTEM</text>
+      <g transform="translate(32 76)">
+        <rect x="0" y="0" width="74" height="156" rx="8" fill="#0B0D0E" stroke="#383D40"/>
+        <rect x="86" y="0" width="74" height="156" rx="8" fill="#111314" stroke="#383D40"/>
+        <rect x="172" y="0" width="74" height="156" rx="8" fill="#171A1B" stroke="#383D40"/>
+        <rect x="258" y="0" width="74" height="156" rx="8" fill="#6CBFA6"/>
+        <rect x="344" y="0" width="74" height="156" rx="8" fill="#F4F7F5"/>
+        <text x="0" y="188" class="mono" font-size="11" fill="#8D9491">background</text>
+        <text x="0" y="208" class="mono" font-size="12" fill="#F4F7F5">#0B0D0E</text>
+        <text x="86" y="188" class="mono" font-size="11" fill="#8D9491">surface</text>
+        <text x="86" y="208" class="mono" font-size="12" fill="#F4F7F5">#111314</text>
+        <text x="172" y="188" class="mono" font-size="11" fill="#8D9491">card</text>
+        <text x="172" y="208" class="mono" font-size="12" fill="#F4F7F5">#171A1B</text>
+        <text x="258" y="188" class="mono" font-size="11" fill="#8D9491">primary</text>
+        <text x="258" y="208" class="mono" font-size="12" fill="#F4F7F5">#6CBFA6</text>
+        <text x="344" y="188" class="mono" font-size="11" fill="#8D9491">text</text>
+        <text x="344" y="208" class="mono" font-size="12" fill="#F4F7F5">#F4F7F5</text>
+        <circle cx="14" cy="252" r="9" fill="#78D6A9"/>
+        <circle cx="56" cy="252" r="9" fill="#FFD47C"/>
+        <circle cx="98" cy="252" r="9" fill="#FF665C"/>
+        <circle cx="140" cy="252" r="9" fill="#F4B56F"/>
+        <circle cx="182" cy="252" r="9" fill="#C5A4E8"/>
+        <text x="216" y="257" class="mono" font-size="12" fill="#8D9491">status + profile accents</text>
+      </g>
+    </g>
+
+    <!-- Panel 6: typography -->
+    <g transform="translate(1064 426.667)">
+      <rect class="panel" width="480" height="346.667"/>
+      <text x="32" y="42" class="label">TYPE SYSTEM</text>
+      <text x="34" y="146" font-size="92" font-weight="760" fill="#F4F7F5">Aa</text>
+      <text x="180" y="112" font-size="26" font-weight="680" fill="#F4F7F5">Manrope / headings</text>
+      <text x="180" y="150" font-size="21" fill="#C9CECB">Plus Jakarta Sans / interface</text>
+      <text x="180" y="188" class="mono" font-size="19" fill="#6CBFA6">SF Mono / agent stream</text>
+      <path d="M 36 230 H 430" class="line thin"/>
+      <text x="36" y="278" font-size="32" font-weight="700" fill="#F4F7F5">Run verdict</text>
+      <text x="255" y="278" class="mono" font-size="22" fill="#6CBFA6">passed</text>
+    </g>
+
+    <!-- Panel 7: physical application -->
+    <g transform="translate(56 797.334)">
+      <rect class="panel-cold" width="480" height="346.667"/>
+      <text x="32" y="42" class="label">TOUCHPOINTS</text>
+      <g transform="translate(46 80)" filter="url(#softShadow)">
+        <rect x="122" y="30" width="232" height="150" rx="12" fill="#F4F7F5"/>
+        <rect x="146" y="56" width="56" height="56" rx="8" fill="#111314"/>
+        <image href="testcat-dark.svg" x="153" y="63" width="42" height="42"/>
+        <text x="220" y="93" font-size="28" font-weight="760" fill="#06110E">testcat</text>
+        <text x="221" y="121" class="mono" font-size="11" fill="#5F6763">run audit card</text>
+        <rect x="326" y="-4" width="84" height="84" rx="10" fill="#77D6B1"/>
+        <image href="testcat-light.svg" x="337" y="7" width="62" height="62"/>
+        <rect x="0" y="112" width="146" height="190" rx="13" fill="#111314" stroke="#3D8F73" stroke-opacity="0.7"/>
+        <image href="testcat-dark.svg" x="29" y="143" width="88" height="88"/>
+        <text x="22" y="262" class="mono" font-size="12" fill="#6CBFA6">SIM LAB</text>
+      </g>
+      <text x="34" y="316" class="micro">badge, launch card, app tile</text>
+    </g>
+
+    <!-- Panel 8: image direction -->
+    <g transform="translate(560 797.334)">
+      <rect class="panel" width="480" height="346.667"/>
+      <clipPath id="p8clip"><rect width="480" height="346.667" rx="8"/></clipPath>
+      <g clip-path="url(#p8clip)">
+        <rect width="480" height="346.667" fill="url(#nightGlass)"/>
+        <rect width="480" height="346.667" fill="url(#dotField)" opacity="0.55"/>
+        <path d="M -20 254 C 86 185, 140 228, 214 172 C 294 112, 356 153, 504 56" fill="none" stroke="#F4F7F5" stroke-width="2" opacity="0.16"/>
+        <path d="M 28 272 H 450 M 66 234 H 410 M 104 196 H 372" stroke="#6CBFA6" stroke-width="1" opacity="0.2"/>
+        <g transform="translate(74 82)">
+          <rect x="0" y="32" width="92" height="170" rx="18" fill="#0B0D0E" stroke="#383D40" stroke-opacity="0.7"/>
+          <rect x="123" y="0" width="92" height="202" rx="18" fill="#0B0D0E" stroke="#3D8F73" stroke-opacity="0.55"/>
+          <rect x="246" y="32" width="92" height="170" rx="18" fill="#0B0D0E" stroke="#383D40" stroke-opacity="0.7"/>
+          <circle cx="46" cy="117" r="22" fill="#253F34" opacity="0.95"/>
+          <path d="M 147 94 C 166 62, 184 130, 202 88" stroke="#6CBFA6" stroke-width="2" fill="none"/>
+          <circle cx="292" cy="117" r="22" fill="#C5A4E8" opacity="0.2"/>
+        </g>
+      </g>
+      <text x="32" y="42" class="label">IMAGE DIRECTION</text>
+      <text x="32" y="316" class="micro">dark simulator lab, clear observation, no stock people</text>
+    </g>
+
+    <!-- Panel 9: system detail -->
+    <g transform="translate(1064 797.334)">
+      <rect class="panel-cold" width="480" height="346.667"/>
+      <text x="32" y="42" class="label">SYSTEM DETAIL</text>
+      <g transform="translate(32 72)">
+        <rect width="416" height="84" rx="10" fill="#111314" stroke="#3D8F73" stroke-opacity="0.6"/>
+        <text x="18" y="34" class="mono" font-size="14" fill="#6CBFA6">$ testcat-sim screencast</text>
+        <text x="18" y="61" class="mono" font-size="13" fill="#8D9491">MJPEG frames -> renderer canvas grid</text>
+      </g>
+      <g transform="translate(32 184)">
+        <rect x="0" y="0" width="122" height="36" rx="18" fill="#18352D" opacity="1" stroke="#3D8F73" stroke-opacity="0.6"/>
+        <text x="18" y="23" class="chip-text">run:event</text>
+        <rect x="142" y="0" width="122" height="36" rx="18" fill="#2A2E31" opacity="1" stroke="#383D40" stroke-opacity="0.7"/>
+        <text x="160" y="23" class="chip-text">devices:list</text>
+        <rect x="284" y="0" width="132" height="36" rx="18" fill="#FF665C" opacity="0.14" stroke="#FF665C" stroke-opacity="0.5"/>
+        <text x="303" y="23" class="chip-text">run:done</text>
+      </g>
+      <g transform="translate(38 258)">
+        <path d="M 0 0 H 88 C 116 0, 112 42, 144 42 H 232 C 262 42, 258 0, 286 0 H 404" stroke="#6CBFA6" stroke-width="2" fill="none" opacity="0.75"/>
+        <circle cx="0" cy="0" r="4" fill="#6CBFA6"/>
+        <circle cx="144" cy="42" r="4" fill="#6CBFA6"/>
+        <circle cx="286" cy="0" r="4" fill="#6CBFA6"/>
+        <circle cx="404" cy="0" r="4" fill="#6CBFA6"/>
+      </g>
+      <text x="32" y="316" class="micro">IPC contracts stay clean; renderer stays sandboxed</text>
+    </g>
+  </g>
+</svg>

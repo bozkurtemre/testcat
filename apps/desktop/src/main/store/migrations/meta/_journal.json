@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1782117446067,
+      "tag": "0000_majestic_sphinx",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1782165437822,
+      "tag": "0001_amazing_aaron_stack",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1782208128387,
+      "tag": "0002_windy_james_howlett",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1782727898069,
+      "tag": "0003_heavy_omega_flight",
+      "breakpoints": true
+    }
+  ]
+}

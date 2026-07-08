@@ -1,0 +1,227 @@
+{
+  "name": "agent-device",
+  "version": "0.17.6",
+  "description": "Agent-native CLI for AI mobile testing and app automation across iOS, Android, tvOS, Android TV, macOS, and Linux.",
+  "mcpName": "io.github.callstackincubator/agent-device",
+  "license": "MIT",
+  "author": "Callstack",
+  "homepage": "https://agent-device.dev/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/callstack/agent-device.git"
+  },
+  "bugs": {
+    "url": "https://github.com/callstack/agent-device/issues"
+  },
+  "type": "module",
+  "packageManager": "pnpm@11.1.2",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/src/index.js",
+      "types": "./dist/src/index.d.ts"
+    },
+    "./io": {
+      "import": "./dist/src/io.js",
+      "types": "./dist/src/io.d.ts"
+    },
+    "./artifacts": {
+      "import": "./dist/src/artifacts.js",
+      "types": "./dist/src/artifacts.d.ts"
+    },
+    "./metro": {
+      "import": "./dist/src/metro.js",
+      "types": "./dist/src/metro.d.ts"
+    },
+    "./batch": {
+      "import": "./dist/src/batch.js",
+      "types": "./dist/src/batch.d.ts"
+    },
+    "./remote-config": {
+      "import": "./dist/src/remote-config.js",
+      "types": "./dist/src/remote-config.d.ts"
+    },
+    "./install-source": {
+      "import": "./dist/src/install-source.js",
+      "types": "./dist/src/install-source.d.ts"
+    },
+    "./android-adb": {
+      "import": "./dist/src/android-adb.js",
+      "types": "./dist/src/android-adb.d.ts"
+    },
+    "./android-snapshot-helper": {
+      "import": "./dist/src/android-snapshot-helper.js",
+      "types": "./dist/src/android-snapshot-helper.d.ts"
+    },
+    "./contracts": {
+      "import": "./dist/src/contracts.js",
+      "types": "./dist/src/contracts.d.ts"
+    },
+    "./selectors": {
+      "import": "./dist/src/selectors.js",
+      "types": "./dist/src/selectors.d.ts"
+    },
+    "./finders": {
+      "import": "./dist/src/finders.js",
+      "types": "./dist/src/finders.d.ts"
+    }
+  },
+  "engines": {
+    "node": ">=22.19"
+  },
+  "bin": {
+    "agent-device": "bin/agent-device.mjs"
+  },
+  "scripts": {
+    "build": "rslib build",
+    "clean:daemon": "node --experimental-strip-types scripts/clean-daemon.ts",
+    "daemon:state-dir": "node --experimental-strip-types scripts/print-daemon-state-dir.ts",
+    "clean:xcuitest": "node scripts/clean-xcuitest-derived.mjs",
+    "clean:xcuitest:ios": "node scripts/clean-xcuitest-derived.mjs ios",
+    "clean:xcuitest:macos": "node scripts/clean-xcuitest-derived.mjs macos",
+    "clean:xcuitest:tvos": "node scripts/clean-xcuitest-derived.mjs tvos",
+    "build:node": "pnpm build && pnpm clean:daemon",
+    "build:xcuitest": "pnpm build:xcuitest:ios && pnpm build:xcuitest:macos",
+    "build:xcuitest:ios": "AGENT_DEVICE_XCUITEST_PLATFORM=ios sh ./scripts/build-xcuitest-apple.sh",
+    "build:xcuitest:ios:clean": "pnpm clean:xcuitest:ios && pnpm build:xcuitest:ios",
+    "build:xcuitest:macos": "AGENT_DEVICE_XCUITEST_PLATFORM=macos sh ./scripts/build-xcuitest-apple.sh",
+    "build:xcuitest:tvos": "AGENT_DEVICE_XCUITEST_PLATFORM=tvos sh ./scripts/build-xcuitest-apple.sh",
+    "build:xcuitest:tvos:clean": "pnpm clean:xcuitest:tvos && pnpm build:xcuitest:tvos",
+    "build:android-snapshot-helper": "sh ./scripts/build-android-snapshot-helper.sh $(node -p \"require('./package.json').version\") .tmp/android-snapshot-helper",
+    "package:android-snapshot-helper": "sh ./scripts/package-android-snapshot-helper.sh $(node -p \"require('./package.json').version\") v$(node -p \"require('./package.json').version\") .tmp/android-snapshot-helper",
+    "package:android-snapshot-helper:npm": "rm -rf android-snapshot-helper/dist && sh ./scripts/package-android-snapshot-helper.sh $(node -p \"require('./package.json').version\") v$(node -p \"require('./package.json').version\") android-snapshot-helper/dist",
+    "build:android-multitouch-helper": "sh ./scripts/build-android-multitouch-helper.sh $(node -p \"require('./package.json').version\") .tmp/android-multitouch-helper",
+    "package:android-multitouch-helper": "sh ./scripts/package-android-multitouch-helper.sh $(node -p \"require('./package.json').version\") .tmp/android-multitouch-helper",
+    "package:android-multitouch-helper:npm": "rm -rf android-multitouch-helper/dist && sh ./scripts/package-android-multitouch-helper.sh $(node -p \"require('./package.json').version\") android-multitouch-helper/dist",
+    "build:macos-helper": "swift build -c release --package-path macos-helper",
+    "build:all": "pnpm build:node && pnpm build:xcuitest",
+    "ad": "node bin/agent-device.mjs",
+    "size": "node scripts/size-report.mjs",
+    "size:markdown": "node scripts/size-report.mjs --json .tmp/size-report.json --markdown .tmp/size-report.md",
+    "perf": "node --experimental-strip-types scripts/perf/run.ts",
+    "perf:ios": "node --experimental-strip-types scripts/perf/run.ts --platform ios",
+    "perf:android": "node --experimental-strip-types scripts/perf/run.ts --platform android",
+    "lint": "oxlint . --deny-warnings",
+    "format": "oxfmt --write src test skills package.json tsconfig.json tsconfig.lib.json rslib.config.ts vitest.config.ts .github/actions/setup-node-pnpm/action.yml .oxlintrc.json .oxfmtrc.json '!test/skillgym/.skillgym-results/**'",
+    "format:check": "oxfmt --check src test skills package.json tsconfig.json tsconfig.lib.json rslib.config.ts vitest.config.ts .github/actions/setup-node-pnpm/action.yml .oxlintrc.json .oxfmtrc.json '!test/skillgym/.skillgym-results/**'",
+    "fallow": "fallow audit --base origin/main",
+    "fallow:all": "fallow --summary",
+    "fallow:baseline": "(fallow dead-code --save-baseline fallow-baselines/dead-code.json --summary || true) && (fallow health --save-baseline fallow-baselines/health.json --summary || true)",
+    "check:fallow": "fallow audit",
+    "check:quick": "pnpm lint && pnpm typecheck",
+    "sync:mcp-metadata": "node scripts/sync-mcp-metadata.mjs",
+    "check:mcp-metadata": "node scripts/sync-mcp-metadata.mjs --check",
+    "version": "node scripts/sync-mcp-metadata.mjs && git add server.json",
+    "check:tooling": "pnpm lint && pnpm typecheck && pnpm check:mcp-metadata && pnpm build",
+    "check:unit": "pnpm test:unit && pnpm test:smoke",
+    "check": "pnpm check:tooling && pnpm check:fallow && pnpm check:unit",
+    "prepack": "pnpm check:mcp-metadata && pnpm build:all && pnpm package:android-snapshot-helper:npm && pnpm package:android-multitouch-helper:npm",
+    "typecheck": "tsc -p tsconfig.json",
+    "test-app:install": "pnpm install --dir examples/test-app --ignore-workspace",
+    "test-app:start": "pnpm --dir examples/test-app start",
+    "test-app:ios": "pnpm --dir examples/test-app ios",
+    "test-app:android": "pnpm --dir examples/test-app android",
+    "test-app:typecheck": "pnpm --dir examples/test-app typecheck",
+    "test-app:replay:ios": "pnpm ad test examples/test-app/replays --platform ios --artifacts-dir .tmp/test-app-replay/ios",
+    "test-app:replay:android": "pnpm ad test examples/test-app/replays --platform android --artifacts-dir .tmp/test-app-replay/android",
+    "test-app:maestro": "node scripts/run-test-app-maestro-suite.mjs",
+    "test-app:maestro:ios": "node scripts/run-test-app-maestro-suite.mjs --platform ios",
+    "test-app:maestro:android": "node scripts/run-test-app-maestro-suite.mjs --platform android",
+    "test": "vitest run --project unit",
+    "test:unit": "vitest run --project unit",
+    "test:coverage": "vitest run --coverage",
+    "test:integration:provider": "vitest run --project provider-integration",
+    "test:integration:progress": "node --experimental-strip-types scripts/integration-progress.ts",
+    "test:integration:progress:check": "node --experimental-strip-types scripts/integration-progress.ts --check",
+    "test:skillgym": "node test/skillgym/runner-environment.ts && pnpm build && skillgym run ./test/skillgym/suites/agent-device-smoke-suite.ts --config ./test/skillgym/skillgym.config.ts",
+    "test:skillgym:case": "node test/skillgym/runner-environment.ts && pnpm build && skillgym run ./test/skillgym/suites/agent-device-smoke-suite.ts --config ./test/skillgym/skillgym.config.ts --case",
+    "test:smoke": "node --test test/integration/smoke-*.test.ts",
+    "test:integration:node": "node --test test/integration/*.test.ts",
+    "test:integration": "pnpm test:integration:node && pnpm test:integration:provider",
+    "test:replay:ios": "node --experimental-strip-types src/bin.ts test test/integration/replays/ios/simulator",
+    "test:replay:ios-device": "node --experimental-strip-types src/bin.ts test test/integration/replays/ios/device",
+    "test:replay:android": "node --experimental-strip-types src/bin.ts test test/integration/replays/android",
+    "test:replay:macos": "node --experimental-strip-types src/bin.ts test test/integration/replays/macos",
+    "test:replay:linux": "node --experimental-strip-types src/bin.ts test test/integration/replays/linux"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "ios-runner",
+    "!ios-runner/**/.build",
+    "!ios-runner/**/.swiftpm",
+    "!ios-runner/**/xcuserdata",
+    "!ios-runner/**/*.xcuserstate",
+    "macos-helper",
+    "!macos-helper/**/.build",
+    "android-snapshot-helper/dist",
+    "!android-snapshot-helper/dist/*.idsig",
+    "android-multitouch-helper/dist",
+    "!android-multitouch-helper/dist/*.idsig",
+    "src/platforms/linux/atspi-dump.py",
+    "skills",
+    "server.json",
+    "smithery.yaml",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "agent",
+    "device",
+    "cli",
+    "automation",
+    "adb",
+    "simctl",
+    "devicectl",
+    "ios",
+    "android",
+    "tvos",
+    "macos",
+    "react-native",
+    "observability",
+    "diagnostics",
+    "network",
+    "profiling",
+    "performance",
+    "mcp",
+    "model-context-protocol",
+    "mcp-server",
+    "ai-agent",
+    "mobile-automation",
+    "ios-simulator",
+    "android-emulator",
+    "xcuitest",
+    "e2e-testing",
+    "cursor",
+    "claude-code",
+    "expo",
+    "mobile-testing",
+    "qa-automation",
+    "ai-testing",
+    "ios-automation",
+    "android-automation",
+    "simulator",
+    "emulator",
+    "appium",
+    "maestro",
+    "detox"
+  ],
+  "dependencies": {
+    "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "@microsoft/api-extractor": "^7.58.8",
+    "@rslib/core": "0.22.1",
+    "@types/node": "^22.19.21",
+    "@typescript/native-preview": "7.0.0-dev.20260613.1",
+    "@vitest/coverage-v8": "4.1.8",
+    "fallow": "^2.95.0",
+    "oxfmt": "^0.42.0",
+    "oxlint": "^1.69.0",
+    "skillgym": "^0.9.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16",
+    "vitest": "^4.1.8"
+  }
+}

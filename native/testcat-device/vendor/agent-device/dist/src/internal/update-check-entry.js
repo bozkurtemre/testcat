@@ -1,0 +1,1 @@
+import{readUpdateCheckWorkerArgs as e,runUpdateCheckWorker as o}from"../5448.js";let r=e(process.argv.slice(2));r&&o(r).catch(()=>{process.exitCode=0});

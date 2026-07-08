@@ -1,0 +1,1 @@
+export{resolveAndroidArchivePackageName}from"./3006.js";

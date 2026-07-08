@@ -1,0 +1,24 @@
+appId: io.testcat.app
+productName: testcat
+directories:
+  output: release
+  buildResources: build
+files:
+  - out/**
+asarUnpack:
+  - node_modules/better-sqlite3/**
+extraResources:
+  - from: ../../native/testcat-device
+    to: native/testcat-device
+  - from: ../../native/testcat-sim/.build/release/testcat-sim
+    to: native/testcat-sim/.build/release/testcat-sim
+  - from: ../../skills/testcat-ios
+    to: skills/testcat-ios
+  - from: ../../agents/testcat-agent
+    to: agents/testcat-agent
+mac:
+  category: public.app-category.developer-tools
+  icon: build/icon.icns
+  target:
+    - dmg
+    - zip

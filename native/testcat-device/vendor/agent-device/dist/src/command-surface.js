@@ -1,0 +1,1 @@
+import{interactionCommandDefinitions as _,batchCommandDefinition as n}from"./9873.js";import{clientCommandDefinitions as r}from"./2948.js";let a=new Map([..._,...r,n].map(_=>[_.name,_]));async function m(_,n,r){var m;return await (m=n,a.get(m)).invoke(_,r)}export{m as runCommand};

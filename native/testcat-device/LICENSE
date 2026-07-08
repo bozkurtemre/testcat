@@ -1,0 +1,4 @@
+testcat-device wrapper code is part of Testcat.
+
+Vendored agent-device files under vendor/agent-device are licensed under the
+MIT license included at vendor/agent-device/LICENSE.

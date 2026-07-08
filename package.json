@@ -1,0 +1,29 @@
+{
+  "name": "testcat",
+  "private": true,
+  "version": "0.0.0",
+  "description": "AI-agent-powered iOS simulator testing desktop app",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @testcat/desktop dev",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "db:generate": "pnpm --filter @testcat/desktop db:generate",
+    "db:migrate": "pnpm --filter @testcat/desktop db:migrate"
+  },
+  "devDependencies": {
+    "turbo": "^2.9.18",
+    "typescript": "^6.0.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "electron",
+      "esbuild"
+    ]
+  }
+}

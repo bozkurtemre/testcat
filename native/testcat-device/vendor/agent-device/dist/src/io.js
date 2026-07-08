@@ -1,0 +1,1 @@
+export{createLocalArtifactAdapter}from"./314.js";

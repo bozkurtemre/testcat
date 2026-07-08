@@ -1,0 +1,17 @@
+# Normalize line endings to LF in the repo
+* text=auto eol=lf
+
+# Vendored upstream code stays byte-identical — no normalization
+native/testcat-device/vendor/** -text
+
+# Binaries
+*.png binary
+*.jpg binary
+*.icns binary
+*.dylib binary
+*.sqlite binary
+
+# Keep GitHub language stats & diffs honest
+native/testcat-device/vendor/** linguist-vendored
+apps/desktop/src/main/store/migrations/** linguist-generated
+pnpm-lock.yaml linguist-generated -diff
