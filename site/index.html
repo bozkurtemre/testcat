@@ -12,19 +12,23 @@
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="styles.css" />
+  <noscript><style>.reveal, .mw { opacity: 1 !important; transform: none !important; }</style></noscript>
 </head>
 <body>
 
-<nav id="nav">
+<a class="skip-link" href="#features">Skip to content</a>
+<div class="noise" aria-hidden="true"></div>
+
+<nav id="nav" aria-label="Main">
   <div class="nav-inner">
     <a class="lockup" href="#top">
-      <img src="assets/testcat-dark.svg" alt="" width="26" height="26" />
+      <img src="assets/testcat-dark.svg" alt="testcat logo" width="26" height="26" />
       <span>testcat</span>
     </a>
     <div class="nav-links">
-      <a href="#features">Features</a>
-      <a href="#how">How it works</a>
-      <a href="#install">Install</a>
+      <a href="#features" data-spy="features">Features</a>
+      <a href="#how" data-spy="how">How it works</a>
+      <a href="#install" data-spy="install">Install</a>
     </div>
     <a class="btn btn-ghost" href="https://github.com/bozkurtemre/testcat" target="_blank" rel="noopener">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
@@ -34,292 +38,333 @@
 </nav>
 
 <header class="hero" id="top">
-  <div class="grid-tex"></div>
-  <div class="hero-glow"></div>
+  <div class="grid-tex" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
   <div class="hero-inner">
-    <p class="eyebrow reveal">open source · macOS · Apple Silicon</p>
-    <h1 class="reveal" style="--d:.08s">AI agents <span class="teal">test</span> your iOS app<span class="teal">.</span></h1>
-    <p class="hero-sub reveal" style="--d:.16s">Describe a scenario in plain language. testcat's agent boots real simulators,
-      drives your build, and hands back an evidence-backed verdict — while you watch live.</p>
-    <div class="hero-cta reveal" style="--d:.24s">
-      <a class="btn btn-primary" href="https://github.com/bozkurtemre/testcat/releases/latest" target="_blank" rel="noopener">Download for macOS</a>
-      <a class="btn btn-ghost" href="https://github.com/bozkurtemre/testcat" target="_blank" rel="noopener">Star on GitHub</a>
+    <div class="hero-copy">
+      <p class="eyebrow reveal">open source · macOS · Apple Silicon</p>
+      <h1 aria-label="AI agents test your iOS app.">
+        <span class="mask"><span class="mw">AI agents</span></span>
+        <span class="mask"><span class="mw"><em class="teal">test</em> your</span></span>
+        <span class="mask"><span class="mw">iOS app<em class="teal">.</em></span></span>
+      </h1>
+      <p class="hero-sub reveal" style="--d:.5s">Describe a scenario in plain language. testcat's agent boots real
+        simulators, drives your build, and hands back an evidence-backed verdict — while you watch live.</p>
+      <div class="hero-cta reveal" style="--d:.62s">
+        <a class="btn btn-primary" href="https://github.com/bozkurtemre/testcat/releases/latest" target="_blank" rel="noopener">Download for macOS</a>
+        <a class="link-arrow" href="https://github.com/bozkurtemre/testcat" target="_blank" rel="noopener">View source <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="hero-runtimes reveal mono" style="--d:.74s">
+        <span>runs</span>
+        <b>claude code</b><i>·</i><b>codex</b><i>·</i><b>opencode</b><i>·</i><b>ollama <em>100% local</em></b>
+      </div>
     </div>
-    <div class="hero-shot reveal" style="--d:.34s" data-zoom>
-      <img src="assets/testcat-app.png" alt="testcat dashboard — What do you want to test?" loading="eager" />
+  </div>
+  <div class="hero-shot-wrap">
+    <div class="hero-shot" data-tilt>
+      <img src="assets/testcat-app.png" alt="testcat dashboard — the workbench asking: what do you want to test?" loading="eager" />
+      <div class="shot-sheen" aria-hidden="true"></div>
     </div>
-    <p class="mono caption reveal" style="--d:.4s">the workbench: profiles · builds · scenarios · live runs · history</p>
+    <p class="mono caption reveal" style="--d:.2s">the workbench — profiles · builds · scenarios · live runs · history</p>
   </div>
 </header>
 
-<section class="strip">
-  <div class="strip-inner reveal">
-    <span class="mono strip-label">BRING YOUR OWN AGENT</span>
-    <div class="strip-chips">
-      <span class="chip">Claude Code</span>
-      <span class="chip">Codex</span>
-      <span class="chip">opencode</span>
-      <span class="chip">Ollama <em>· 100% local</em></span>
-    </div>
-  </div>
-</section>
-
 <section class="how" id="how">
-  <div class="section-head reveal">
-    <h2>Three steps<span class="teal">.</span> No scripts<span class="teal">.</span></h2>
-    <p>No brittle test code to maintain — the agent reads the screen like a QA engineer would.</p>
-  </div>
-  <div class="steps">
-    <div class="step reveal" style="--d:0s">
-      <span class="step-n mono">01</span>
-      <h3>Describe</h3>
-      <p>A name, a simulator <span class="mono-inline">.app</span> build, an agent profile, and the scenario — written the way you'd brief a colleague.</p>
+  <div class="how-grid">
+    <div class="how-head">
+      <div class="sticky-block">
+        <span class="kicker mono reveal">no test scripts to maintain</span>
+        <h2 class="reveal" style="--d:.08s">Three steps<span class="teal">.</span><br />No scripts<span class="teal">.</span></h2>
+        <p class="reveal" style="--d:.16s">The agent reads the screen the way a QA engineer would — the accessibility
+          tree first, pixels when it matters.</p>
+      </div>
     </div>
-    <div class="step reveal" style="--d:.12s">
-      <span class="step-n mono">02</span>
-      <h3>Watch</h3>
-      <p>The agent boots devices, taps, types and verifies. Its reasoning streams on the left; live simulators paint on the right.</p>
-    </div>
-    <div class="step reveal" style="--d:.24s">
-      <span class="step-n mono">03</span>
-      <h3>Trust</h3>
-      <p>A verdict backed by actions and observations — persisted locally with the full evidence trail.</p>
-    </div>
+    <ol class="how-steps">
+      <li class="how-step reveal">
+        <span class="hs-n mono" aria-hidden="true">01</span>
+        <div>
+          <h3>Describe</h3>
+          <p>A name, a simulator <span class="mono-inline">.app</span> build, an agent profile, and the scenario —
+            written the way you'd brief a colleague.</p>
+        </div>
+      </li>
+      <li class="how-step reveal" style="--d:.1s">
+        <span class="hs-n mono" aria-hidden="true">02</span>
+        <div>
+          <h3>Watch</h3>
+          <p>The agent boots devices, taps, types and verifies. Its reasoning streams on the left; live simulators
+            paint on the right.</p>
+        </div>
+      </li>
+      <li class="how-step reveal" style="--d:.2s">
+        <span class="hs-n mono" aria-hidden="true">03</span>
+        <div>
+          <h3>Trust</h3>
+          <p>A verdict backed by actions and observations — persisted locally with the full evidence trail.</p>
+        </div>
+      </li>
+    </ol>
   </div>
 </section>
 
 <main id="features">
+  <div class="stack">
 
-  <!-- 01 · agents -->
-  <section class="feature">
-    <div class="feature-text reveal">
-      <span class="mono feature-idx">01 · agent profiles</span>
-      <h2>Bring your own agent<span class="teal">.</span></h2>
-      <p>One desktop app, four runtimes. Cloud-strong or fully local — every profile drives real iOS simulators. Models and effort levels are read live from each CLI.</p>
-    </div>
-    <div class="feature-visual">
-      <div class="v-agents">
-        <div class="agent-row active reveal" style="--d:0s">
-          <span class="agent-ic mono">Cl</span>
-          <span class="agent-name">Claude Code<em class="mono">headless · stream-json</em></span>
-          <span class="pill">sonnet</span><span class="pill">effort high</span><span class="pill teal"><i></i>selected</span>
+    <!-- 01 · agents -->
+    <div class="panel-wrap">
+      <section class="panel feature">
+        <span class="ghost-n mono" aria-hidden="true" data-parallax="-0.04">01</span>
+        <div class="feature-text">
+          <span class="kicker mono reveal">agent profiles</span>
+          <h2 class="reveal" style="--d:.06s">Bring your own agent<span class="teal">.</span></h2>
+          <p class="reveal" style="--d:.12s">One desktop app, four runtimes. Cloud-strong or fully local — every
+            profile drives real iOS simulators. Models and effort levels are read live from each CLI.</p>
         </div>
-        <div class="agent-row reveal" style="--d:.1s">
-          <span class="agent-ic mono">Co</span>
-          <span class="agent-name">Codex<em class="mono">exec --json</em></span>
-          <span class="pill">gpt-5.5-codex</span><span class="pill">reasoning high</span>
-        </div>
-        <div class="agent-row reveal" style="--d:.2s">
-          <span class="agent-ic mono">op</span>
-          <span class="agent-name">opencode<em class="mono">single-session · no subagents</em></span>
-          <span class="pill">big-pickle</span><span class="pill">steps bounded</span>
-        </div>
-        <div class="agent-row reveal" style="--d:.3s">
-          <span class="agent-ic mono">Ol</span>
-          <span class="agent-name">Ollama<em class="mono">100% local · guided replay</em></span>
-          <span class="pill">gemma4:26b</span><span class="pill">built-in loop</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 02 · live grid -->
-  <section class="feature wide">
-    <div class="feature-text center reveal">
-      <span class="mono feature-idx">02 · live device grid</span>
-      <h2>Watch it test<span class="teal">.</span> <span class="dim">Live.</span></h2>
-      <p>The agent's reasoning streams on the left — every simulator it drives paints live on the right. Up to four per run; the agent decides what to boot.</p>
-    </div>
-    <div class="feature-visual" data-parallax="0.06">
-      <div class="v-window">
-        <div class="v-chat">
-          <span class="mono v-label">AGENT OUTPUT</span>
-          <div class="msg think reveal" style="--d:.05s">Email screen visible. The field is at y=258 — I'll paste through the simulator clipboard, keyboard-layout safe.</div>
-          <div class="msg tool mono reveal" style="--d:.15s"><b>❯</b><span>testcat-sim tap --udid 7E89…D1 --x 210 --y 286</span><span class="pill teal sm">ok</span></div>
-          <div class="msg text reveal" style="--d:.25s">Field focused. Entering the generated account and continuing to OTP.</div>
-          <div class="msg tool mono reveal" style="--d:.35s"><b>❯</b><span>testcat-sim describe-ui --udid 7E89…D1</span><span class="pill teal sm">ok</span></div>
-          <div class="msg think reveal" style="--d:.45s">Device B is still on the plans list — verifying the order there before I mark this case done.</div>
-          <div class="v-chat-foot mono"><span>case 3 / 5</span><span>in 41.2k · out 3.8k tok</span></div>
-        </div>
-        <div class="v-phones">
-          <figure class="v-phone reveal" style="--d:.15s">
-            <figcaption class="mono"><span>iPhone Air · iOS 26.5</span><span class="pill teal sm">24 fps</span></figcaption>
-            <div class="ph-frame">
-              <div class="ph-notch"></div>
-              <div class="ph-body">
-                <div class="sk w58 h10"></div><div class="sk h44"></div><div class="sk h44"></div><div class="sk h44"></div><div class="sk w82 h10"></div>
-                <div class="ph-bottom">
-                  <div class="dots"><i class="on"></i><i></i><i></i></div>
-                  <div class="ph-btn">Continue</div>
-                </div>
-              </div>
+        <div class="feature-visual">
+          <div class="v-agents">
+            <div class="agent-row active spot reveal" style="--d:0s">
+              <span class="agent-ic mono">Cl</span>
+              <span class="agent-name">Claude Code<em class="mono">headless · stream-json</em></span>
+              <span class="pill">sonnet</span><span class="pill">effort high</span><span class="pill teal"><i></i>selected</span>
             </div>
-          </figure>
-          <figure class="v-phone reveal" style="--d:.3s">
-            <figcaption class="mono"><span>iPhone Air · iOS 26.4</span><span class="pill teal sm">31 fps</span></figcaption>
-            <div class="ph-frame">
-              <div class="ph-notch"></div>
-              <div class="ph-body">
-                <div class="sk w44 h10"></div>
-                <div class="ph-input mono">ge-8599-sim-2@tekna…<i class="cursor"></i></div>
-                <div class="sk w70 h8"></div>
+            <div class="agent-row spot reveal" style="--d:.1s">
+              <span class="agent-ic mono">Co</span>
+              <span class="agent-name">Codex<em class="mono">exec --json</em></span>
+              <span class="pill">gpt-5.5-codex</span><span class="pill">reasoning high</span>
+            </div>
+            <div class="agent-row spot reveal" style="--d:.2s">
+              <span class="agent-ic mono">op</span>
+              <span class="agent-name">opencode<em class="mono">single-session · no subagents</em></span>
+              <span class="pill">big-pickle</span><span class="pill">steps bounded</span>
+            </div>
+            <div class="agent-row spot reveal" style="--d:.3s">
+              <span class="agent-ic mono">Ol</span>
+              <span class="agent-name">Ollama<em class="mono">100% local · guided replay</em></span>
+              <span class="pill">gemma4:26b</span><span class="pill">built-in loop</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 02 · live grid -->
+    <div class="panel-wrap">
+      <section class="panel feature wide">
+        <span class="ghost-n mono" aria-hidden="true" data-parallax="-0.04">02</span>
+        <div class="feature-text center">
+          <span class="kicker mono reveal">live device grid</span>
+          <h2 class="reveal" style="--d:.06s">Watch it test<span class="teal">.</span> <span class="dim">Live.</span></h2>
+          <p class="reveal" style="--d:.12s">The agent's reasoning streams on the left — every simulator it drives
+            paints live on the right. Up to four per run; the agent decides what to boot.</p>
+        </div>
+        <div class="feature-visual">
+          <div class="v-window spot">
+            <div class="v-chat">
+              <span class="mono v-label">AGENT OUTPUT</span>
+              <div class="msg think reveal" style="--d:.05s">Email screen visible. The field is at y=258 — I'll paste through the simulator clipboard, keyboard-layout safe.</div>
+              <div class="msg tool mono reveal" style="--d:.15s"><b>❯</b><span>testcat-sim tap --udid 7E89…D1 --x 210 --y 286</span><span class="pill teal sm">ok</span></div>
+              <div class="msg text reveal" style="--d:.25s">Field focused. Entering the generated account and continuing to OTP.</div>
+              <div class="msg tool mono reveal" style="--d:.35s"><b>❯</b><span>testcat-sim describe-ui --udid 7E89…D1</span><span class="pill teal sm">ok</span></div>
+              <div class="msg think reveal" style="--d:.45s">Device B is still on the plans list — verifying the order there before I mark this case done.</div>
+              <div class="v-chat-foot mono"><span>case 3 / 5</span><span>in 41.2k · out 3.8k tok</span></div>
+            </div>
+            <div class="v-phones">
+              <figure class="v-phone reveal" style="--d:.15s">
+                <figcaption class="mono"><span>iPhone Air · iOS 26.5</span><span class="pill teal sm fps" data-fps="24">24 fps</span></figcaption>
+                <div class="ph-frame">
+                  <div class="ph-notch"></div>
+                  <div class="ph-body">
+                    <div class="sk w58 h10"></div><div class="sk h44"></div><div class="sk h44"></div><div class="sk h44"></div><div class="sk w82 h10"></div>
+                    <div class="ph-bottom">
+                      <div class="dots"><i class="on"></i><i></i><i></i></div>
+                      <div class="ph-btn">Continue</div>
+                    </div>
+                  </div>
+                </div>
+              </figure>
+              <figure class="v-phone reveal" style="--d:.3s">
+                <figcaption class="mono"><span>iPhone Air · iOS 26.4</span><span class="pill teal sm fps" data-fps="31">31 fps</span></figcaption>
+                <div class="ph-frame">
+                  <div class="ph-notch"></div>
+                  <div class="ph-body">
+                    <div class="sk w44 h10"></div>
+                    <div class="ph-input mono">ge-8599-sim-2@tekna…<i class="cursor"></i></div>
+                    <div class="sk w70 h8"></div>
+                    <div class="ph-btn">Continue</div>
+                    <div class="ph-kbd">
+                      <div class="krow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                      <div class="krow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                      <div class="krow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                      <div class="krow space"><i></i></div>
+                    </div>
+                  </div>
+                </div>
+              </figure>
+              <figure class="v-phone reveal" style="--d:.45s">
+                <figcaption class="mono"><span>iPhone 17 Pro Max · iOS 26.2</span><span class="pill teal sm fps" data-fps="18">18 fps</span></figcaption>
+                <div class="ph-frame">
+                  <div class="ph-notch"></div>
+                  <div class="ph-body">
+                    <div class="sk w50 h10"></div>
+                    <div class="row3"><div class="sk h52"></div><div class="sk h52"></div><div class="sk h52"></div></div>
+                    <div class="sk h30"></div><div class="sk h30"></div><div class="sk h30"></div>
+                    <div class="price-row"><div class="sk w38 h8"></div><span class="mono teal">$4.99</span></div>
+                    <div class="ph-bottom"><div class="ph-btn">Buy eSIM</div></div>
+                  </div>
+                </div>
+              </figure>
+            </div>
+          </div>
+          <p class="mono caption">view-only MJPEG · up to 4 simulators per run</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- 03 · evidence -->
+    <div class="panel-wrap">
+      <section class="panel feature flip">
+        <span class="ghost-n mono" aria-hidden="true" data-parallax="-0.04">03</span>
+        <div class="feature-text">
+          <span class="kicker mono reveal">scenarios &amp; verdicts</span>
+          <h2 class="reveal" style="--d:.06s">Plain language in<span class="teal">.</span> <span class="dim">Evidence out.</span></h2>
+          <p class="reveal" style="--d:.12s">Write the test the way you'd brief a QA engineer — testcat turns it into
+            actions, verifications, and a verdict you can trust. A completion gate cross-examines every success claim:
+            no executed actions, no pass.</p>
+          <div class="gate-card spot reveal" style="--d:.2s">
+            <span class="mono v-label">COMPLETION GATE</span>
+            <div class="gate-line"><span class="mono">"passed" · 1 observation · 0 actions</span><span class="pill red"><i></i>rejected</span></div>
+            <span class="mono gate-note">hollow claims re-prompted twice — then failed honestly</span>
+          </div>
+        </div>
+        <div class="feature-visual">
+          <div class="v-verdict">
+            <div class="card scenario spot reveal" style="--d:0s">
+              <span class="mono v-label">SCENARIO</span>
+              <p>Install the build on two simulators. Register with a fresh account on each, buy the cheapest eSIM
+                with the test card, and verify the order appears in both accounts' history.</p>
+            </div>
+            <div class="connector reveal" style="--d:.15s"><i></i><span class="mono">47 TOOL CALLS · 12M 41S</span><i></i></div>
+            <div class="card verdict spot reveal" style="--d:.3s">
+              <div class="verdict-head">
+                <span class="pill teal lg"><i></i>PASSED</span>
+                <span class="mono">23 actions · 14 verifications · 2 devices</span>
+              </div>
+              <ul>
+                <li>fresh accounts registered on both simulators</li>
+                <li>checkout completed with test card · order id captured</li>
+                <li>order visible in history on device A and device B</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 04 · physical -->
+    <div class="panel-wrap">
+      <section class="panel feature">
+        <span class="ghost-n mono" aria-hidden="true" data-parallax="-0.04">04</span>
+        <div class="feature-text">
+          <span class="kicker mono reveal">physical devices</span>
+          <h2 class="reveal" style="--d:.06s">Simulators — and your real iPhone<span class="teal">.</span></h2>
+          <p class="reveal" style="--d:.12s">The agent drives physical devices through an XCUITest runner testcat
+            signs and installs for you.</p>
+          <div class="evidence-list">
+            <div class="evi spot reveal" style="--d:.1s"><b>✓</b><div><strong>TestFlight builds work</strong><span class="mono">already on the phone? no .app file needed — launched by bundle id</span></div></div>
+            <div class="evi spot reveal" style="--d:.2s"><b>✓</b><div><strong>Free Apple ID is enough</strong><span class="mono">runner auto-signed &amp; auto-prepared at the start of every run</span></div></div>
+            <div class="evi spot reveal" style="--d:.3s"><b>✓</b><div><strong>Same skill, same agent</strong><span class="mono">describe-ui refs · layout-safe text entry · evidence discipline</span></div></div>
+          </div>
+        </div>
+        <div class="feature-visual">
+          <div class="v-bigphone reveal" data-parallax="0.05">
+            <div class="bp-frame">
+              <div class="bp-notch"></div>
+              <div class="bp-banner mono"><i></i>AUTOMATION RUNNING</div>
+              <div class="bp-body">
+                <div class="sk w48 h11"></div>
+                <div class="sk h54"></div>
+                <div class="row2"><div class="sk h38"></div><div class="sk h38"></div></div>
+                <div class="sk w76 h9"></div>
+                <div class="sk h34"></div><div class="sk h34"></div>
                 <div class="ph-btn">Continue</div>
-                <div class="ph-kbd">
-                  <div class="krow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                  <div class="krow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                  <div class="krow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                  <div class="krow space"><i></i></div>
-                </div>
+                <div class="sk w58 h9 center"></div>
+                <div class="bp-tabs"><span class="on"></span><span></span><span></span><span></span></div>
+                <div class="bp-home"></div>
               </div>
             </div>
-          </figure>
-          <figure class="v-phone reveal" style="--d:.45s">
-            <figcaption class="mono"><span>iPhone 17 Pro Max · iOS 26.2</span><span class="pill teal sm">18 fps</span></figcaption>
-            <div class="ph-frame">
-              <div class="ph-notch"></div>
-              <div class="ph-body">
-                <div class="sk w50 h10"></div>
-                <div class="row3"><div class="sk h52"></div><div class="sk h52"></div><div class="sk h52"></div></div>
-                <div class="sk h30"></div><div class="sk h30"></div><div class="sk h30"></div>
-                <div class="price-row"><div class="sk w38 h8"></div><span class="mono teal">$4.99</span></div>
-                <div class="ph-bottom"><div class="ph-btn">Buy eSIM</div></div>
-              </div>
-            </div>
-          </figure>
-        </div>
-      </div>
-      <p class="mono caption">view-only MJPEG · up to 4 simulators per run</p>
-    </div>
-  </section>
-
-  <!-- 03 · evidence -->
-  <section class="feature flip">
-    <div class="feature-text reveal">
-      <span class="mono feature-idx">03 · scenarios &amp; verdicts</span>
-      <h2>Plain language in<span class="teal">.</span> <span class="dim">Evidence out.</span></h2>
-      <p>Write the test the way you'd brief a QA engineer — testcat turns it into actions, verifications, and a verdict you can trust. A completion gate cross-examines every success claim: no executed actions, no pass.</p>
-      <div class="gate-card reveal" style="--d:.2s">
-        <span class="mono v-label">COMPLETION GATE</span>
-        <div class="gate-line"><span class="mono">"passed" · 1 observation · 0 actions</span><span class="pill red"><i></i>rejected</span></div>
-        <span class="mono gate-note">hollow claims re-prompted twice — then failed honestly</span>
-      </div>
-    </div>
-    <div class="feature-visual">
-      <div class="v-verdict">
-        <div class="card scenario reveal" style="--d:0s">
-          <span class="mono v-label">SCENARIO</span>
-          <p>Install the build on two simulators. Register with a fresh account on each, buy the cheapest eSIM with the test card, and verify the order appears in both accounts' history.</p>
-        </div>
-        <div class="connector reveal" style="--d:.15s"><i></i><span class="mono">47 TOOL CALLS · 12M 41S</span><i></i></div>
-        <div class="card verdict reveal" style="--d:.3s">
-          <div class="verdict-head">
-            <span class="pill teal lg"><i></i>PASSED</span>
-            <span class="mono">23 actions · 14 verifications · 2 devices</span>
-          </div>
-          <ul>
-            <li>fresh accounts registered on both simulators</li>
-            <li>checkout completed with test card · order id captured</li>
-            <li>order visible in history on device A and device B</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 04 · physical -->
-  <section class="feature">
-    <div class="feature-text reveal">
-      <span class="mono feature-idx">04 · physical devices</span>
-      <h2>Simulators — and your real iPhone<span class="teal">.</span></h2>
-      <p>The agent drives physical devices through an XCUITest runner testcat signs and installs for you.</p>
-      <div class="evidence-list">
-        <div class="evi reveal" style="--d:.1s"><b>✓</b><div><strong>TestFlight builds work</strong><span class="mono">already on the phone? no .app file needed — launched by bundle id</span></div></div>
-        <div class="evi reveal" style="--d:.2s"><b>✓</b><div><strong>Free Apple ID is enough</strong><span class="mono">runner auto-signed &amp; auto-prepared at the start of every run</span></div></div>
-        <div class="evi reveal" style="--d:.3s"><b>✓</b><div><strong>Same skill, same agent</strong><span class="mono">describe-ui refs · layout-safe text entry · evidence discipline</span></div></div>
-      </div>
-    </div>
-    <div class="feature-visual" data-parallax="0.05">
-      <div class="v-bigphone reveal">
-        <div class="bp-frame">
-          <div class="bp-notch"></div>
-          <div class="bp-banner mono"><i></i>AUTOMATION RUNNING</div>
-          <div class="bp-body">
-            <div class="sk w48 h11"></div>
-            <div class="sk h54"></div>
-            <div class="row2"><div class="sk h38"></div><div class="sk h38"></div></div>
-            <div class="sk w76 h9"></div>
-            <div class="sk h34"></div><div class="sk h34"></div>
-            <div class="ph-btn">Continue</div>
-            <div class="sk w58 h9 center"></div>
-            <div class="bp-tabs">
-              <span class="on"></span><span></span><span></span><span></span>
-            </div>
-            <div class="bp-home"></div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
-  </section>
 
-  <!-- 05 · dashboard -->
-  <section class="feature wide">
-    <div class="feature-text center reveal">
-      <span class="mono feature-idx">05 · run dashboard</span>
-      <h2>Every run<span class="teal">,</span> <span class="dim">replayable.</span></h2>
-      <p>Chat, tool calls, screenshots and network traffic — persisted to a local SQLite dashboard. Nothing leaves your Mac.</p>
-    </div>
-    <div class="feature-visual" data-parallax="0.05">
-      <div class="v-dash">
-        <div class="dash-head">
-          <div><span class="pill teal">chat replay</span><span class="pill">screenshots</span><span class="pill">network</span><span class="pill">events</span></div>
-          <span class="mono">testcat.sqlite · local</span>
+    <!-- 05 · dashboard -->
+    <div class="panel-wrap">
+      <section class="panel feature wide">
+        <span class="ghost-n mono" aria-hidden="true" data-parallax="-0.04">05</span>
+        <div class="feature-text center">
+          <span class="kicker mono reveal">run dashboard</span>
+          <h2 class="reveal" style="--d:.06s">Every run<span class="teal">,</span> <span class="dim">replayable.</span></h2>
+          <p class="reveal" style="--d:.12s">Chat, tool calls, screenshots and network traffic — persisted to a local
+            SQLite dashboard. Nothing leaves your Mac.</p>
         </div>
-        <div class="dash-row reveal" style="--d:0s"><span class="r-name">Purchase flow — 2 devices</span><span class="mono r-agent">claude · sonnet · high</span><span class="pill teal"><i></i>passed</span><span class="mono r-dur">12m 41s</span><span class="mono r-when">today 11:54</span></div>
-        <div class="dash-row reveal" style="--d:.08s"><span class="r-name">Onboarding + login replay</span><span class="mono r-agent">ollama · gemma4:26b</span><span class="pill teal"><i></i>passed</span><span class="mono r-dur">4m 07s</span><span class="mono r-when">today 10:12</span></div>
-        <div class="dash-row reveal" style="--d:.16s"><span class="r-name">Seyahat Arkadaşları Arşivleme</span><span class="mono r-agent">claude · sonnet · high</span><span class="pill amber"><i></i>running</span><span class="mono r-dur">08:22</span><span class="mono r-when">now</span></div>
-        <div class="dash-row reveal" style="--d:.24s"><span class="r-name">Regression — plans list</span><span class="mono r-agent">codex · gpt-5.5</span><span class="pill red"><i></i>failed</span><span class="mono r-dur">9m 58s</span><span class="mono r-when">yesterday</span></div>
-        <div class="dash-row reveal" style="--d:.32s"><span class="r-name">Smoke — fresh install boot</span><span class="mono r-agent">claude · haiku · medium</span><span class="pill teal"><i></i>passed</span><span class="mono r-dur">1m 44s</span><span class="mono r-when">yesterday</span></div>
-      </div>
-      <p class="mono caption">failed runs keep their full evidence trail — reproduce from the exact step that broke</p>
+        <div class="feature-visual">
+          <div class="v-dash spot">
+            <div class="dash-head">
+              <div><span class="pill teal">chat replay</span><span class="pill">screenshots</span><span class="pill">network</span><span class="pill">events</span></div>
+              <span class="mono">testcat.sqlite · local</span>
+            </div>
+            <div class="dash-row reveal" style="--d:0s"><span class="r-name">Purchase flow — 2 devices</span><span class="mono r-agent">claude · sonnet · high</span><span class="pill teal"><i></i>passed</span><span class="mono r-dur">12m 41s</span><span class="mono r-when">today 11:54</span></div>
+            <div class="dash-row reveal" style="--d:.08s"><span class="r-name">Onboarding + login replay</span><span class="mono r-agent">ollama · gemma4:26b</span><span class="pill teal"><i></i>passed</span><span class="mono r-dur">4m 07s</span><span class="mono r-when">today 10:12</span></div>
+            <div class="dash-row reveal" style="--d:.16s"><span class="r-name">Seyahat Arkadaşları Arşivleme</span><span class="mono r-agent">claude · sonnet · high</span><span class="pill amber"><i></i>running</span><span class="mono r-dur" data-timer="502">08:22</span><span class="mono r-when">now</span></div>
+            <div class="dash-row reveal" style="--d:.24s"><span class="r-name">Regression — plans list</span><span class="mono r-agent">codex · gpt-5.5</span><span class="pill red"><i></i>failed</span><span class="mono r-dur">9m 58s</span><span class="mono r-when">yesterday</span></div>
+            <div class="dash-row reveal" style="--d:.32s"><span class="r-name">Smoke — fresh install boot</span><span class="mono r-agent">claude · haiku · medium</span><span class="pill teal"><i></i>passed</span><span class="mono r-dur">1m 44s</span><span class="mono r-when">yesterday</span></div>
+          </div>
+          <p class="mono caption">failed runs keep their full evidence trail — reproduce from the exact step that broke</p>
+        </div>
+      </section>
     </div>
-  </section>
+
+  </div>
 
   <!-- local models band -->
   <section class="band">
-    <div class="band-inner reveal">
-      <span class="mono feature-idx">bonus · local-model assist</span>
-      <h2>Small local models<span class="teal">,</span> guided to the finish<span class="teal">.</span></h2>
-      <p>Before a weak local model runs, a strong model explores your build once and caches an app map + login flow.
-        Runs then replay login deterministically with fresh per-run accounts — credentials injected at runtime, redacted in logs.</p>
-      <div class="band-flow mono">
-        <span class="reveal" style="--d:0s">explore once</span><b>→</b>
-        <span class="reveal" style="--d:.1s">cache app map</span><b>→</b>
-        <span class="reveal" style="--d:.2s">replay login</span><b>→</b>
-        <span class="reveal" style="--d:.3s">let gemma test</span>
+    <div class="band-inner">
+      <span class="kicker mono reveal">bonus · local-model assist</span>
+      <h2 class="reveal" style="--d:.06s">Small local models<span class="teal">,</span><br />guided to the finish<span class="teal">.</span></h2>
+      <p class="reveal" style="--d:.12s">Before a weak local model runs, a strong model explores your build once and
+        caches an app map + login flow. Runs then replay login deterministically with fresh per-run accounts —
+        credentials injected at runtime, redacted in logs.</p>
+      <div class="band-flow mono" role="list">
+        <span role="listitem" class="reveal" style="--d:.1s">explore once</span><b aria-hidden="true">→</b>
+        <span role="listitem" class="reveal" style="--d:.2s">cache app map</span><b aria-hidden="true">→</b>
+        <span role="listitem" class="reveal" style="--d:.3s">replay login</span><b aria-hidden="true">→</b>
+        <span role="listitem" class="reveal" style="--d:.4s">let gemma test</span>
       </div>
     </div>
   </section>
-
 </main>
 
 <section class="install" id="install">
-  <div class="section-head reveal">
-    <h2>Up and running in minutes<span class="teal">.</span></h2>
-    <p>macOS on Apple Silicon · Xcode for simulators · an agent CLI (or a local Ollama daemon)</p>
+  <div class="install-head">
+    <span class="kicker mono reveal">get started</span>
+    <h2 class="reveal" style="--d:.06s">Up and running in minutes<span class="teal">.</span></h2>
+    <p class="reveal" style="--d:.12s">macOS on Apple Silicon · Xcode for simulators · an agent CLI (or a local Ollama daemon)</p>
   </div>
   <div class="install-cards">
-    <div class="card install-card reveal" style="--d:0s">
+    <div class="card install-card primary-card spot reveal" style="--d:0s">
+      <span class="mono v-label">RECOMMENDED</span>
       <h3>Download the app</h3>
-      <p>Unsigned build — bypass Gatekeeper once with right-click → Open.</p>
+      <p>Unsigned build — bypass Gatekeeper once with right-click → Open, or:</p>
+      <div class="code mono"><button class="copy" data-copy="xattr -cr /Applications/testcat.app" aria-label="Copy command">⧉</button><span>xattr -cr /Applications/testcat.app</span></div>
       <a class="btn btn-primary" href="https://github.com/bozkurtemre/testcat/releases/latest" target="_blank" rel="noopener">Get the DMG</a>
-      <div class="code mono"><button class="copy" data-copy="xattr -cr /Applications/testcat.app" aria-label="Copy">⧉</button><span>xattr -cr /Applications/testcat.app</span></div>
     </div>
-    <div class="card install-card reveal" style="--d:.12s">
-      <h3>Build from source</h3>
-      <p>pnpm 9 + Node 24 + Xcode. The setup guide in the app checks the rest.</p>
+    <div class="card install-card spot reveal" style="--d:.12s">
+      <span class="mono v-label">FROM SOURCE</span>
+      <h3>Build it yourself</h3>
+      <p>pnpm 9 + Node 24 + Xcode. The in-app setup guide checks the rest.</p>
       <div class="code mono multi"><button class="copy" data-copy="git clone https://github.com/bozkurtemre/testcat.git && cd testcat
 pnpm install && make sim-build
-pnpm dev" aria-label="Copy">⧉</button><span>git clone https://github.com/bozkurtemre/testcat.git
+pnpm dev" aria-label="Copy commands">⧉</button><span>git clone https://github.com/bozkurtemre/testcat.git
 cd testcat
 pnpm install &amp;&amp; make sim-build
 pnpm dev</span></div>
@@ -335,6 +380,7 @@ pnpm dev</span></div>
       <a href="https://github.com/bozkurtemre/testcat" target="_blank" rel="noopener">github</a>
       <a href="https://github.com/bozkurtemre/testcat/releases" target="_blank" rel="noopener">releases</a>
       <a href="https://github.com/bozkurtemre/testcat/issues" target="_blank" rel="noopener">issues</a>
+      <a href="https://github.com/bozkurtemre/testcat/blob/main/LICENSE" target="_blank" rel="noopener">license</a>
     </div>
   </div>
 </footer>

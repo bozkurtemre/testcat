@@ -1,7 +1,12 @@
-// testcat landing — scroll choreography (no dependencies)
+// testcat landing v2 — scroll choreography, no dependencies
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* Reveal on view — elements fade/slide in once, staggered via --d. */
+/* Headline word-mask reveal (weight animates 500 → 800 while lifting in). */
+requestAnimationFrame(() =>
+  requestAnimationFrame(() => document.querySelector(".hero-copy")?.classList.add("go")),
+);
+
+/* Reveal on view — once, staggered via --d. */
 const io = new IntersectionObserver(
   (entries) => {
     for (const e of entries) {
@@ -11,53 +16,102 @@ const io = new IntersectionObserver(
       }
     }
   },
-  { threshold: 0.18, rootMargin: "0px 0px -6% 0px" },
+  { threshold: 0.16, rootMargin: "0px 0px -6% 0px" },
 );
-document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+document.querySelectorAll(".reveal, .how-step").forEach((el) => io.observe(el));
 
-/* Nav switches to blurred glass after leaving the top. */
+/* Nav: glass after scroll + scrollspy for the active section. */
 const nav = document.getElementById("nav");
 const onScrollNav = () => nav.classList.toggle("scrolled", window.scrollY > 24);
 onScrollNav();
 window.addEventListener("scroll", onScrollNav, { passive: true });
 
-/* Apple-style scroll physics: hero shot eases from a slight zoom to rest;
-   [data-parallax] visuals drift against the scroll. */
-if (!reduced) {
-  const zoomEl = document.querySelector("[data-zoom]");
-  const parallaxEls = [...document.querySelectorAll("[data-parallax]")];
-  let ticking = false;
+const spyLinks = new Map(
+  [...document.querySelectorAll("[data-spy]")].map((a) => [a.dataset.spy, a]),
+);
+const spy = new IntersectionObserver(
+  (entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        spyLinks.forEach((a, id) => a.classList.toggle("active", id === e.target.id));
+      }
+    }
+  },
+  { rootMargin: "-30% 0px -60% 0px" },
+);
+["features", "how", "install"].forEach((id) => {
+  const el = document.getElementById(id);
+  if (el) spy.observe(el);
+});
 
-  const frame = () => {
-    ticking = false;
+/* Inertial scroll physics: values lerp toward their scroll-derived targets,
+   so motion keeps a hint of weight after the wheel stops. */
+if (!reduced) {
+  const tiltEl = document.querySelector("[data-tilt]");
+  const parallaxEls = [...document.querySelectorAll("[data-parallax]")].map((el) => ({
+    el,
+    speed: parseFloat(el.dataset.parallax || "0.05"),
+    cur: 0,
+  }));
+  const tilt = { cur: 0 }; // 0 = tilted entry pose, 1 = settled flat
+
+  const tick = () => {
     const vh = window.innerHeight;
 
-    if (zoomEl) {
-      const r = zoomEl.getBoundingClientRect();
-      // 0 when the shot enters, 1 when its top reaches 20% of the viewport
-      const p = Math.min(1, Math.max(0, 1 - (r.top - vh * 0.2) / (vh * 0.8)));
-      const scale = 0.94 + p * 0.06;
-      const lift = (1 - p) * 26;
-      zoomEl.style.transform = `scale(${scale.toFixed(4)}) translateY(${lift.toFixed(1)}px)`;
+    if (tiltEl) {
+      const r = tiltEl.getBoundingClientRect();
+      const target = Math.min(1, Math.max(0, 1 - (r.top - vh * 0.12) / (vh * 0.72)));
+      tilt.cur += (target - tilt.cur) * 0.09;
+      const rx = (1 - tilt.cur) * 9;
+      const scale = 0.955 + tilt.cur * 0.045;
+      const lift = (1 - tilt.cur) * 30;
+      tiltEl.style.transform =
+        `perspective(1300px) rotateX(${rx.toFixed(2)}deg) scale(${scale.toFixed(4)}) translateY(${lift.toFixed(1)}px)`;
     }
 
-    for (const el of parallaxEls) {
-      const speed = parseFloat(el.dataset.parallax || "0.05");
+    for (const p of parallaxEls) {
+      const r = p.el.getBoundingClientRect();
+      const target = -(r.top + r.height / 2 - vh / 2) * p.speed;
+      p.cur += (target - p.cur) * 0.08;
+      p.el.style.transform = `translateY(${p.cur.toFixed(1)}px)`;
+    }
+
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+/* Spotlight borders — cards glow under the cursor. */
+if (matchMedia("(hover: hover)").matches) {
+  document.querySelectorAll(".spot").forEach((el) => {
+    el.addEventListener("pointermove", (ev) => {
       const r = el.getBoundingClientRect();
-      const mid = r.top + r.height / 2 - vh / 2;
-      el.style.transform = `translateY(${(-mid * speed).toFixed(1)}px)`;
-    }
-  };
+      el.style.setProperty("--mx", `${(((ev.clientX - r.left) / r.width) * 100).toFixed(2)}%`);
+      el.style.setProperty("--my", `${(((ev.clientY - r.top) / r.height) * 100).toFixed(2)}%`);
+    });
+  });
+}
 
-  const onScroll = () => {
-    if (!ticking) {
-      ticking = true;
-      requestAnimationFrame(frame);
+/* Living details: fps badges drift, the running timer counts. */
+if (!reduced) {
+  const fpsEls = [...document.querySelectorAll(".fps")];
+  setInterval(() => {
+    for (const el of fpsEls) {
+      const base = parseInt(el.dataset.fps, 10);
+      const v = Math.max(1, base + Math.round((Math.random() - 0.5) * 4));
+      el.textContent = `${v} fps`;
     }
-  };
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onScroll, { passive: true });
-  frame();
+  }, 1200);
+
+  const timer = document.querySelector("[data-timer]");
+  if (timer) {
+    let s = parseInt(timer.dataset.timer, 10) || 0;
+    setInterval(() => {
+      s += 1;
+      const m = String(Math.floor(s / 60)).padStart(2, "0");
+      timer.textContent = `${m}:${String(s % 60).padStart(2, "0")}`;
+    }, 1000);
+  }
 }
 
 /* Copy buttons */
@@ -72,7 +126,7 @@ document.querySelectorAll(".copy").forEach((btn) => {
         btn.textContent = "⧉";
       }, 1400);
     } catch {
-      /* clipboard unavailable — leave the text selectable */
+      /* clipboard unavailable — text stays selectable */
     }
   });
 });
