@@ -58,6 +58,14 @@ the **renderer** is pure React UI; a sandboxed **preload bridge** is the only li
 - Physical-device runs additionally need an iPhone with Developer Mode enabled and any Apple ID team for
   runner signing
 
+## Install (prebuilt app)
+
+Grab the latest `testcat-<version>-arm64.dmg` from the
+[**Releases**](https://github.com/bozkurtemre/testcat/releases/latest) page, drag testcat into
+Applications, and you're set — the simulator CLI, device runtime, skill, and agent identity are bundled and
+install themselves on first launch. Builds are unsigned: on first open, use right-click → Open (or
+`xattr -cr /Applications/testcat.app`).
+
 ## Quick start (from source)
 
 ```bash
