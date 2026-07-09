@@ -104,7 +104,7 @@ export function TopBar({
         </button>
       </nav>
       <span
-        className="ml-2 self-center font-mono text-[10px] text-muted-foreground/60"
+        className="mr-2 ml-2 self-center font-mono text-[10px] text-muted-foreground/60"
         title="testcat version"
       >
         v{__APP_VERSION__}
