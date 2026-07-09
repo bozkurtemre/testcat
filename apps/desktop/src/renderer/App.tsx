@@ -320,7 +320,13 @@ export default function App() {
               onClick={() => setActive({ kind: "settings" })}
             />
 
-            <div className="mt-auto">
+            <div className="mt-auto flex flex-col items-center gap-1.5">
+              <span
+                className="font-mono text-[9px] text-muted-foreground/60"
+                title="testcat version"
+              >
+                v{__APP_VERSION__}
+              </span>
               <RailButton
                 icon={CircleHelp}
                 label="Help"
