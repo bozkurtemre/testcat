@@ -10,6 +10,10 @@
 
 ---
 
+<div align="center">
+  <img src="assets/testcat-app.png" alt="testcat — agent chat on the left, live simulator grid on the right" width="900" />
+</div>
+
 Define a test scenario (name + `.app` build + agent profile + prompt) and hit Run. The agent boots
 simulators, installs your build, and works through the scenario — tapping, swiping, typing, reading the
 accessibility tree — while you watch its reasoning stream on the left and a live view-only simulator grid on
