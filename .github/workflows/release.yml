@@ -63,6 +63,6 @@ jobs:
           gh release create "v$VERSION" \
             apps/desktop/release/*.dmg \
             apps/desktop/release/*-mac.zip \
-            --title "testcat v$VERSION" \
+            --title "v$VERSION" \
             --generate-notes \
             --notes "> Unsigned build — first open with right-click → Open, or \`xattr -cr /Applications/testcat.app\`."
