@@ -56,6 +56,18 @@ protocol Simulator: Sendable {
     /// returns a fresh handle; the underlying `simctl status_bar`
     /// invocation is stateless.
     func statusBar() -> any StatusBar
+
+    /// This simulator's shared pasteboard — set plain text, read it
+    /// back, or sync the host Mac's full pasteboard across (images
+    /// included). Each call returns a fresh handle; the underlying
+    /// `simctl pbcopy | pbpaste | pbsync` invocation is stateless.
+    func pasteboard() -> any Pasteboard
+
+    /// Drive this simulator's simulated GPS location — pin a point,
+    /// run a moving route, or clear back to live values. Each call
+    /// returns a fresh handle; the underlying `simctl location`
+    /// invocation is stateless.
+    func location() -> any Location
 }
 
 /// `Simulator.State` lifted to a top-level enum so the protocol can
