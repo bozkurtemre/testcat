@@ -268,13 +268,6 @@ testcat-sim screenshot --udid <UDID> --quality 0.6 --scale 2 > thumb.jpg
 | `--quality`| `0.85`  | JPEG lossy compression (0.0 – 1.0).                          |
 | `--scale`  | `1`     | Integer downscale divisor: 1 = native, 2 = half, 3 = third.  |
 
-Equivalent HTTP route during `testcat-sim serve`:
-
-```
-GET http://localhost:8421/simulators/<UDID>/screenshot.jpg[?quality=0.6][?scale=2]
-```
-
-Same defaults, same bytes — the route and the CLI share `ScreenSnapshot.capture`.
 
 **Failure modes:**
 - **2 s timeout / `Failure.timeout`.** SimulatorKit only emits a frame
@@ -356,7 +349,6 @@ testcat-sim logs --udid <UDID> | grep -i error                 # composes with s
 | `--predicate`  | unset     | Raw `NSPredicate` passed to `log stream --predicate` verbatim.    |
 | `--bundle-id`  | unset     | Shorthand → `process == "<id>"`. ANDs with `--predicate` when both given. |
 
-Equivalent WebSocket route during `testcat-sim serve`:
 
 ```
 WS  /simulators/<UDID>/logs?level=info&style=default[&predicate=…&bundleId=…]
@@ -385,18 +377,39 @@ above — it has no encoder warm-up cost and respects a clean 2 s
 timeout. `stream | head -c …` is *not* the snapshot path; the live
 stream pipeline interferes with concurrent gestures.
 
-## Standalone web UI — `serve` (for humans, not agents)
+## Continuous MJPEG — `screencast` (for testcat's own grid, not agents)
 
 ```bash
-testcat-sim serve [--host 127.0.0.1] [--port 8421]
-# → http://localhost:8421/simulators            (device list)
-# → http://localhost:8421/simulators/<UDID>     (focus mode — 1 sim, fullscreen)
-# → http://localhost:8421/farm                  (multi-device dashboard)
+testcat-sim screencast --udid <UDID> [--scale 2] [--quality 0.6] [--fps ...]
 ```
 
-Agents typically don't need this — `testcat-sim input` is the programmatic
-path. Mention it once if a human asks how to interact with the sim
-themselves while you work.
+Continuously writes MJPEG frames to stdout; the testcat desktop app uses
+this to paint its live device grid. Agents should not start it — use
+`screenshot` for verification captures. There is **no `serve` command**
+in this fork (the upstream web UI was removed).
+
+## Orientation — `orientation`
+
+```bash
+testcat-sim orientation --udid <UDID> portrait
+testcat-sim orientation --udid <UDID> landscape-left     # also: landscape-right, portrait-upside-down
+```
+
+Rotates the booted simulator's interface. Re-run `describe-ui` afterwards —
+frames and the root size change with the rotation.
+
+## Status bar — `status-bar override|clear`
+
+```bash
+testcat-sim status-bar override --udid <UDID> --time "9:41" --battery-level 100 \
+  --battery-state charged --wifi-bars 3 --cellular-bars 4
+testcat-sim status-bar clear --udid <UDID>
+```
+
+Pins clock/battery/signal for deterministic screenshots. Flags: `--time`,
+`--operator-name`, `--data-network`, `--wifi-mode searching|failed|active`,
+`--wifi-bars 0-3`, `--cellular-mode`, `--cellular-bars`, `--battery-state`,
+`--battery-level`. `clear` removes every override.
 
 ## Bezel rasterisation — `chrome composite`
 

@@ -212,13 +212,16 @@ printable only** — non-ASCII (`é`, `中`, `🦄`) fails the parse rather
 than silently dropping mid-string.
 
 **Phase-1 limits:** no IME / Pinyin / dead keys / emoji / non-Latin
-scripts — those need `IndigoHIDMessageForKeyboardNSEvent` (phase 2).
-For non-ASCII text, fall back to `xcrun simctl io <UDID> text "…"`.
+scripts. For non-ASCII or symbol-heavy text use the pasteboard instead
+(there is no `simctl io text` operation): `echo -n "…" | xcrun simctl
+pbcopy <UDID>`, then `{"type":"key","code":"KeyV","modifiers":["command"]}`
+— see the Text entry section in SKILL.md.
 
-## WebSocket-only verbs (during `testcat-sim serve`)
+## Stream-control verbs (on `stream` stdin — testcat internal)
 
-When connected to `WS /simulators/<UDID>/stream?format=…`, the same
-text channel that carries gestures also accepts stream-control verbs:
+There is no `serve` command in this fork. The `stream` command reads the
+same control verbs from stdin; testcat's own pipeline uses them — agents
+normally never need this section:
 
 ```json
 {"type":"set_bitrate","bps":4000000}     // re-encode target bitrate
@@ -247,61 +250,24 @@ tree, or skip the image and act on the labels and frames directly.
 
 These do not exist for `testcat-sim input` (no stream there).
 
-## Logs WebSocket — `WS /simulators/<UDID>/logs`
+## Logs — CLI only in this fork
 
-Dedicated socket for the live unified-log feed. Filter is fixed at
-connect time via query string (`level`, `style`, `predicate`,
-`bundleId`); restart the socket to change it.
+There is no logs WebSocket (no `serve`). Stream the unified log with the
+CLI and stop it with SIGINT (Ctrl-C):
 
-Server → client text frames:
-
-```json
-{"type":"log_started"}
-{"type":"log","line":"2026-05-06 11:56:13.835 Df locationd[5526:…] @ClxSimulated, Fix, …"}
-{"type":"log_stopped","reason":"client closed"}
+```bash
+testcat-sim logs --udid <UDID> [--level debug|info|notice|error|fault] \
+  [--style default|compact|json|syslog] [--predicate '...'] [--bundle-id <id>]
 ```
 
-Client → server: `{"type":"stop"}` terminates early; otherwise the
-socket runs until the simulator dies or the client closes. Levels:
-**`default | info | debug` only** — the iOS-runtime `log` binary
-rejects `notice / error / fault` (host macOS supports them; the
-simulator's slimmer interface does not). For higher-severity-only
-filtering, use `predicate=messageType == "error"`.
+Default level is `info`. `--bundle-id` is the convenient per-app filter.
 
-## Camera WebSocket — `WS /simulators/<UDID>/camera`
+## Virtual camera — internal, no agent path
 
-Dedicated socket that drives the virtual-camera feature: testcat-sim
-captures BGRA frames off a Mac webcam and pumps them into
-`/tmp/SimCam.bgra`, where `VirtualCamera.dylib` (loaded inside the
-simulator via `DYLD_INSERT_LIBRARIES`) picks them up and substitutes
-them for the iOS app's `AVCaptureVideoPreviewLayer` /
-`AVCapturePhotoOutput` / `UIImagePickerController` contents.
+The fork ships `VirtualCamera.dylib` (webcam → simulator camera feed), but
+its control channel is internal to the testcat pipeline. There is no
+agent-facing CLI for it — don't propose camera injection in test runs.
 
-Client → server text frames:
-
-```json
-{"type":"camera_list"}
-{"type":"camera_start","deviceUID":"0x14600000046d0825","fit":"fit","mirror":false}
-{"type":"camera_stop"}
-{"type":"camera_set_flags","fit":"fill","mirror":true}
-```
-
-Server → client text frames:
-
-```json
-{"type":"camera_devices","devices":[{"uid":"…","name":"FaceTime HD Camera","isDefault":true}]}
-{"type":"camera_state","ok":true,"phase":"streaming","fps":29.97,"device":"0x14600000046d0825"}
-{"type":"camera_state","ok":false,"phase":"idle","fps":0,"error":"…"}
-```
-
-`camera_devices` lands once on connect, again after every
-`camera_list`. `camera_state` lands after every start/stop/set_flags.
-`fit` is one of `"fit"` (letterbox) | `"fill"` (cover with
-center-crop). The browser exposes this as the "Camera" card under
-`/simulators/<UDID>`'s sidebar. iOS apps launched *before* arming
-won't see frames — relaunch them. See
-[`docs/features/camera.md`](../../../docs/features/camera.md) for
-the full pipeline.
 
 ## Debugging a "tap missed"
 

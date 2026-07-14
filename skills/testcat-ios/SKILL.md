@@ -185,6 +185,13 @@ testcat-sim chrome layout --udid <UDID> | jq '.screen | {width, height}'
 
 Different devices have different point sizes — never hardcode `438×954`.
 
+One caveat: when a **system alert window** is up (ATT prompt, permission
+dialogs), its accessibility frames are in the *alert window's* coordinate
+space, which can differ from `chrome layout`'s app-screen size (e.g. 420×912
+vs 438×954). When tapping elements from `describe-ui`, pass the `width`/
+`height` of that same tree's **root node frame** — not a cached
+`chrome layout` value — or the tap lands offset from the button.
+
 ## One-shot vs streaming gestures
 
 - **One-shot** (`testcat-sim tap / swipe / pinch / pan / press`) — separate
@@ -253,6 +260,10 @@ testcat-sim describe-ui --udid <UDID> 2>/dev/null | jq '..|select(.identifier? a
 
 Use plain `2>&1` only when a command fails and you need the error text.
 
+Hit-test mode: `describe-ui --udid <UDID> --x <px> --y <py>` returns only the
+node(s) at that point (device points) — cheaper than dumping the full tree
+when you just need to know what's under a coordinate.
+
 ## Simulated push notifications
 
 `testcat-sim` has no push command; `xcrun simctl push` is the right tool for
@@ -300,15 +311,20 @@ testcat-sim screenshot --udid <UDID> --output /tmp/frame.jpg
 ## What's wired vs what isn't
 
 Wired (use freely): `install`, `launch`, `terminate`, `uninstall`; `tap`,
-`swipe`, `touch1-*`, `touch2-*`, `pinch`, `pan`, `scroll` (with optional
-`edge: bottom|top|left|right` for system gestures);
+`double-tap`, `swipe`, `touch1-*`, `touch2-*`, `pinch`, `pan`, `scroll`
+(with optional `edge: bottom|top|left|right` for system gestures);
 `press` hardware buttons (`home`, `lock`, `power`, `volume-up`, `volume-down`,
 `action`, `app-switcher`, `swipe-to-app-switcher`, `swipe-to-home`,
 `pull-down-to-lock-screen`, `pull-down-to-notification-center`); `key` /
 `type` (US-ASCII — see "Text entry" above for the keyboard-layout footgun);
 `describe-ui` (on-screen accessibility tree as JSON, frames
-in device points — feed `frame.x + frame.width/2` straight back into a `tap`);
-`logs` (stream the booted sim's unified log to stdout).
+in device points — feed `frame.x + frame.width/2` straight back into a `tap`;
+`--x/--y` for a point hit-test);
+`logs` (stream the booted sim's unified log to stdout);
+`orientation` (`portrait | landscape-left | landscape-right |
+portrait-upside-down` — for rotation scenarios);
+`status-bar override|clear` (pin time/battery/signal for deterministic
+screenshots).
 
 NOT wired (don't propose): non-ASCII or symbol-heavy `type` (use the
 pasteboard method in "Text entry" — there is no `simctl io text` operation),
