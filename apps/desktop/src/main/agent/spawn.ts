@@ -136,6 +136,11 @@ function skillInstructions(profile: SpawnProfile, req: RunRequest): string {
             "- Do not choose a different booted simulator just because it is already open. It may be reserved by another active run.",
           ]
         : []),
+      ...(req.assignedSimulators && req.assignedSimulators.length > 1
+        ? [
+            `- ${req.assignedSimulators.length} simulators are reserved because the scenario requires ${req.assignedSimulators.length} devices. Boot, install, and launch the build on ALL ${req.assignedSimulators.length} reserved UDIDs and drive each one as the scenario describes. Running the scenario on fewer devices than reserved does not satisfy the scenario.${req.warmup?.ok ? " The warmed-up simulator is only the FIRST of them — bring the remaining reserved simulator(s) up yourself before the multi-device steps." : ""}`,
+          ]
+        : []),
       "- `TESTCAT_IN_USE_DEVICES_JSON` may contain devices reserved by active runs. Never use a simulator reserved by another run.",
       req.warmup?.ok
         ? "- Warm-up already completed list/boot/install/launch/initial describe-ui for the reserved simulator. Continue with verify/interact/complete on that same UDID."

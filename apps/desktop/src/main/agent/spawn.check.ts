@@ -107,6 +107,35 @@ assert.match(codexWithGuide.input, /Source run: previous pass/);
 assert.match(codexWithGuide.input, /verify the current UI before each action/i);
 assert.match(codexWithGuide.input, /reserved simulator UDID/i);
 assert.match(codexWithGuide.input, /33333333-3333-4333-8333-333333333333/);
+// single reserved sim → no multi-device directive
+assert.doesNotMatch(codexWithGuide.input, /ALL \d+ reserved UDIDs/);
+
+const codexMultiSim = buildSpawn(
+  {
+    cli: "codex",
+    model: "gpt-5-codex",
+    reasoning: "medium",
+    skills: ["testcat-ios"],
+    systemPrompt: "",
+  },
+  {
+    ...req,
+    assignedSimulators: [
+      reservedSimulator,
+      { ...reservedSimulator, udid: "44444444-4444-4444-8444-444444444444" },
+    ],
+    warmup: {
+      ok: true,
+      device: reservedSimulator,
+      summary: "Warm-up completed on iPhone 17.",
+      ui: "{}",
+    },
+  },
+  NO_AGENT,
+);
+assert.match(codexMultiSim.input, /scenario requires 2 devices/);
+assert.match(codexMultiSim.input, /ALL 2 reserved UDIDs/);
+assert.match(codexMultiSim.input, /warmed-up simulator is only the FIRST/);
 
 const codexWithWarmup = buildSpawn(
   {
