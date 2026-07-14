@@ -4,7 +4,8 @@ PNPM ?= pnpm
 
 .PHONY: help install setup dev dev-desktop build typecheck \
 	db-path db-reset db-generate db-migrate desktop-build desktop-preview \
-	desktop-package test-electron sim-build testcat-device-deps testcat-device-build doctor
+	desktop-package test-electron sim-build testcat-device-deps testcat-device-build \
+	upstream-check upstream-gate doctor
 
 help: ## Show available commands.
 	@awk 'BEGIN {FS = ":.*## "; printf "\nUsage: make <target>\n\nTargets:\n"} /^[a-zA-Z0-9_-]+:.*## / {printf "  %-18s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -62,5 +63,11 @@ testcat-device-build: testcat-device-deps ## Verify the bundled physical iOS dev
 	test -x native/testcat-device/testcat-device
 	native/testcat-device/testcat-device --version
 	native/testcat-device/testcat-device doctor
+
+upstream-check: ## Report upstream baguette/agent-device drift vs the reconciled baseline.
+	node scripts/sync-upstream.mjs --check
+
+upstream-gate: ## Verify skill docs only mention testcat-sim commands in the registry.
+	node scripts/sync-upstream.mjs --gate
 
 doctor: typecheck desktop-build test-electron ## Run the main local verification checks.
