@@ -1,7 +1,7 @@
 {
   "name": "testcat",
   "private": true,
-  "version": "1.0.3",
+  "version": "0.0.0",
   "description": "AI-agent-powered iOS simulator testing desktop app",
   "packageManager": "pnpm@9.15.4",
   "engines": {
