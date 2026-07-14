@@ -7,8 +7,9 @@ Forked from [tddworks/baguette](https://github.com/tddworks/baguette) (Apache-2.
 | Fork point (Swift CLI) | ~v0.1.61 (binary `--version` reports 0.1.61) |
 | Removed from fork | `serve` (web UI/farm), WebSocket routes |
 | Added in fork | `screencast`, `complete`, `double-tap`*, `orientation`*, `status-bar`* (*may partially overlap upstream) |
+| Ported from upstream post-fork | `paste`, `clipboard get/sync/copy`, `location set/start/clear` (from v0.1.80, 2026-07-14) |
 | Skill (`skills/testcat-ios`) last reconciled against | upstream `skills/baguette` @ **v0.1.80** (2026-07-14) |
-| Known upstream features NOT in fork | `paste`, `clipboard get/sync/copy`, `location`, `add-media`, camera WS |
+| Known upstream features NOT in fork | `add-media`, camera WS |
 
 ## Reconciling the skill with a new upstream release
 
