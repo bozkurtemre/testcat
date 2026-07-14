@@ -40,6 +40,20 @@ protocol Subprocess: AnyObject, Sendable {
         onExit:  @escaping @Sendable (Int32) -> Void
     ) throws
 
+    /// Like `run(executable:arguments:onBytes:onExit:)`, but feeds
+    /// `stdin` to the child's standard input and closes it (EOF)
+    /// once written. For children that read their payload from
+    /// stdin (`simctl pbcopy`). The no-stdin variant keeps the
+    /// child detached from the controlling terminal instead —
+    /// use it unless the child genuinely consumes stdin.
+    func run(
+        executable: URL,
+        arguments: [String],
+        stdin: Data,
+        onBytes: @escaping @Sendable (Data) -> Void,
+        onExit:  @escaping @Sendable (Int32) -> Void
+    ) throws
+
     /// Send the child the platform's polite-stop signal
     /// (`SIGTERM` on POSIX). Idempotent: repeated calls are
     /// no-ops once the child is already gone or has been asked

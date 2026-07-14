@@ -217,9 +217,16 @@ layout-independent:
 
 ```bash
 # 1. Focus the field first (tap its center from describe-ui).
-# 2. Put the text on the simulator pasteboard (pbcopy reads stdin, NOT an argument):
-echo -n "user-1@example.com" | xcrun simctl pbcopy <UDID>
-# 3. Paste:
+# 2. Paste any unicode (sets the sim pasteboard via simctl pbcopy, then presses Cmd+V):
+testcat-sim paste --udid <UDID> --text "user-1@example.com"
+```
+
+`--no-press` stops after setting the pasteboard (for apps that read
+`UIPasteboard` directly). If the installed `testcat-sim` predates `paste`,
+the manual recipe is equivalent:
+
+```bash
+echo -n "user-1@example.com" | xcrun simctl pbcopy <UDID>   # pbcopy reads stdin, NOT an argument
 testcat-sim key --udid <UDID> --code KeyV --modifiers command
 ```
 
@@ -230,6 +237,10 @@ testcat-sim key --udid <UDID> --code KeyV --modifiers command
   continuing — never assume the text landed intact.
 - To clear a field: `key --code KeyA --modifiers command` then
   `key --code Backspace`.
+- `clipboard get` prints the sim's pasteboard text (verify what a Copy action
+  produced); `clipboard sync` carries the host Mac's clipboard onto the sim
+  full-fidelity (images included — the path for pasting non-text content);
+  `clipboard copy` is the reverse, sim → host.
 - `key --code` takes **W3C KeyboardEvent codes**: `Enter` (there is no
   `Return`), `Backspace`, `Tab`, `Space`, `Escape`, `KeyA`–`KeyZ`,
   `Digit0`–`Digit9`, `ArrowUp/Down/Left/Right`.
@@ -306,12 +317,17 @@ Wired (use freely): `install`, `launch`, `terminate`, `uninstall`; `tap`,
 `action`, `app-switcher`, `swipe-to-app-switcher`, `swipe-to-home`,
 `pull-down-to-lock-screen`, `pull-down-to-notification-center`); `key` /
 `type` (US-ASCII — see "Text entry" above for the keyboard-layout footgun);
+`paste` (layout-independent unicode text entry via the sim pasteboard +
+Cmd+V) and `clipboard get|sync|copy`;
+`location set|start|clear` (simulated GPS — pin a `lat,lon`, run a moving
+route between waypoints, or restore live values; for scenarios that need a
+location, set it **before** launching the app);
 `describe-ui` (on-screen accessibility tree as JSON, frames
 in device points — feed `frame.x + frame.width/2` straight back into a `tap`);
 `logs` (stream the booted sim's unified log to stdout).
 
-NOT wired (don't propose): non-ASCII or symbol-heavy `type` (use the
-pasteboard method in "Text entry" — there is no `simctl io text` operation),
+NOT wired (don't propose): non-ASCII or symbol-heavy `type` (use `paste` —
+there is no `simctl io text` operation),
 F-keys / Page Up/Down through `key`, `button: "siri"` (crashes backboardd —
 refused by the CLI).
 

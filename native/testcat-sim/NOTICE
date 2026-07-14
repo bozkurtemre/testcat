@@ -15,6 +15,15 @@ Changes made in this fork:
   existing MJPEG stream in an async command context so SimulatorKit framebuffer
   callbacks are delivered without the (removed) web-server event loop; testcat's
   live grid consumes it.
+- Ported the pasteboard commands from upstream v0.1.80 (`paste`,
+  `clipboard get|sync|copy`, backed by `xcrun simctl pbcopy|pbpaste|pbsync`),
+  including the stdin-carrying `Subprocess.run` variant they need. CLI surface
+  only — upstream's `input`-stream/serve wire dispatch half was not ported.
+- Ported the simulated-GPS commands from upstream v0.1.77 (`location
+  set|start|clear`, backed by `xcrun simctl location`) and the numpad key
+  codes (`Numpad0-9`, `NumpadDecimal|Divide|Multiply|Subtract|Add|Enter|Equal`)
+  from upstream v0.1.78. This brings the fork to feature parity with upstream
+  v0.1.80 for everything outside the removed web/serve layer.
 
 The core simulator-control and framebuffer-stream functionality is unchanged.
 The names "baguette" and "tddworks" appear only to credit the origin as required

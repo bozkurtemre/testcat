@@ -181,6 +181,9 @@ testcat-sim press --udid X --button pull-down-to-lock-screen            # slow d
 testcat-sim press --udid X --button pull-down-to-notification-center    # slow drag from top-right → Notification Center
 testcat-sim key   --udid X --code KeyA --modifiers shift,command [--duration 0.2]
 testcat-sim type  --udid X --text "hello world"
+testcat-sim paste --udid X --text "café ☕ user-1@example.com" [--no-press]
+testcat-sim clipboard get|sync|copy --udid X
+testcat-sim location set --udid X 37.3318,-122.0312
 ```
 
 `x` / `y` etc. are device points (see `wire-protocol.md` for the
@@ -232,13 +235,48 @@ testcat-sim type --udid X --text "hello world"
 testcat-sim type --udid X --text "Login: alice@example.com"
 ```
 
-Supported codes: `KeyA`–`KeyZ`, `Digit0`–`Digit9`, `Enter`, `Escape`,
-`Backspace`, `Tab`, `Space`, `ArrowUp/Down/Left/Right`, US punctuation
-(`Minus`, `Equal`, `BracketLeft`, …). Modifiers: `shift`, `control`,
-`option`, `command` (comma-separated on the CLI). Phase-1 limits:
-**no IME, no emoji, no accented characters** — those need
-`KeyboardNSEvent` (phase 2). See
+Supported codes: `KeyA`–`KeyZ`, `Digit0`–`Digit9`, `Numpad0`–`Numpad9`
+(+ `NumpadDecimal|Divide|Multiply|Subtract|Add|Enter|Equal`), `Enter`,
+`Escape`, `Backspace`, `Tab`, `Space`, `ArrowUp/Down/Left/Right`, US
+punctuation (`Minus`, `Equal`, `BracketLeft`, …). Modifiers: `shift`,
+`control`, `option`, `command` (comma-separated on the CLI). Phase-1
+limits: **no IME, no emoji, no accented characters** — those go through
+`paste` instead. See
 [`docs/features/keyboard.md`](../../../docs/features/keyboard.md).
+
+### Pasteboard — `paste` / `clipboard`
+
+```bash
+# Any unicode into the focused field: sets the sim pasteboard
+# (xcrun simctl pbcopy), then presses Cmd+V.
+testcat-sim paste --udid X --text "café ☕ user-1@example.com"
+testcat-sim paste --udid X --text "…" --no-press   # pasteboard only, no Cmd+V
+
+testcat-sim clipboard get  --udid X   # print the sim's pasteboard text (raw, no trailing newline)
+testcat-sim clipboard sync --udid X   # host Mac clipboard → sim, full-fidelity (images included)
+testcat-sim clipboard copy --udid X   # sim → host Mac clipboard, full-fidelity
+```
+
+`paste` prints `{"ok":true,"action":"paste"}` on success. The first paste
+into a freshly installed app triggers iOS's "Allow Paste" alert — see
+"Text entry" in SKILL.md.
+
+### Simulated GPS — `location`
+
+```bash
+testcat-sim location set   --udid X 37.3318,-122.0312    # pin a lat,lon position
+testcat-sim location start --udid X --speed 30 40.9903,29.0290 41.0082,28.9784
+                                                          # moving route over 2+ waypoints
+testcat-sim location clear --udid X                       # restore live values
+```
+
+Positions are single `lat,lon` tokens (not `--lat`/`--lon` — a leading `-`
+on a western longitude would parse as a flag). For a *latitude* that starts
+with `-`, put `--` before the token: `location set --udid X -- -37.6,144.9`.
+`start` also takes `--distance <metres>` / `--interval <seconds>` between
+updates. Latitude is validated to ±90, longitude to ±180, waypoints ≥ 2.
+Set the location **before** launching the app under test so the first
+CoreLocation fix already sees it.
 
 ## Streaming gestures — `input`
 

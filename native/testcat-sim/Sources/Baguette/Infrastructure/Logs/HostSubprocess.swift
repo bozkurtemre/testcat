@@ -28,17 +28,48 @@ final class HostSubprocess: Subprocess, @unchecked Sendable {
         onBytes: @escaping @Sendable (Data) -> Void,
         onExit:  @escaping @Sendable (Int32) -> Void
     ) throws {
+        // Detach from any controlling terminal. Without this a
+        // SIGINT handed to the parent (Ctrl-C in `baguette logs`)
+        // would also kill the child via the foreground pgid
+        // before the parent's own SIGTERM handler runs.
+        try run(
+            executable: executable, arguments: arguments,
+            standardInput: FileHandle.nullDevice, stdinData: nil,
+            onBytes: onBytes, onExit: onExit
+        )
+    }
+
+    func run(
+        executable: URL,
+        arguments: [String],
+        stdin: Data,
+        onBytes: @escaping @Sendable (Data) -> Void,
+        onExit:  @escaping @Sendable (Int32) -> Void
+    ) throws {
+        // A pipe has no controlling tty, so the SIGINT detachment
+        // concern of the no-stdin variant doesn't apply here.
+        try run(
+            executable: executable, arguments: arguments,
+            standardInput: Pipe(), stdinData: stdin,
+            onBytes: onBytes, onExit: onExit
+        )
+    }
+
+    private func run(
+        executable: URL,
+        arguments: [String],
+        standardInput: Any,
+        stdinData: Data?,
+        onBytes: @escaping @Sendable (Data) -> Void,
+        onExit:  @escaping @Sendable (Int32) -> Void
+    ) throws {
         let pipe = Pipe()
         let process = Process()
         process.executableURL = executable
         process.arguments = arguments
         process.standardOutput = pipe
         process.standardError  = pipe
-        // Detach from any controlling terminal. Without this a
-        // SIGINT handed to the parent (Ctrl-C in `baguette logs`)
-        // would also kill the child via the foreground pgid
-        // before the parent's own SIGTERM handler runs.
-        process.standardInput  = FileHandle.nullDevice
+        process.standardInput  = standardInput
         process.environment = ProcessInfo.processInfo.environment
 
         pipe.fileHandleForReading.readabilityHandler = { handle in
@@ -55,6 +86,17 @@ final class HostSubprocess: Subprocess, @unchecked Sendable {
         lock.unlock()
 
         try process.run()
+
+        // Feed stdin off the calling thread — a payload past the
+        // 64 KB pipe buffer would otherwise block here until the
+        // child drains it. Closing the handle delivers EOF.
+        if let stdinData, let stdinPipe = standardInput as? Pipe {
+            DispatchQueue.global(qos: .userInitiated).async {
+                let handle = stdinPipe.fileHandleForWriting
+                try? handle.write(contentsOf: stdinData)
+                try? handle.close()
+            }
+        }
     }
 
     func terminate() {
