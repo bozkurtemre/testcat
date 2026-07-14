@@ -136,6 +136,7 @@ const codexMultiSim = buildSpawn(
 assert.match(codexMultiSim.input, /scenario requires 2 devices/);
 assert.match(codexMultiSim.input, /ALL 2 reserved UDIDs/);
 assert.match(codexMultiSim.input, /warmed-up simulator is only the FIRST/);
+assert.match(codexMultiSim.input, /\.running \+ \.available/);
 
 const codexWithWarmup = buildSpawn(
   {

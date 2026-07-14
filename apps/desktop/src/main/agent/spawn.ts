@@ -129,6 +129,7 @@ function skillInstructions(profile: SpawnProfile, req: RunRequest): string {
       req.warmup?.ok
         ? "- If verification shows the warmed-up app is unavailable, recover on the same reserved simulator before reporting a blocker."
         : "- If that first command fails because the CLI is missing, report the exact error and stop. Otherwise continue from the returned device list.",
+      "- `list --json` prints an OBJECT `{running, available}`, not an array. With jq, iterate `.running + .available | .[]` — plain `.[]` fails with `Cannot index array with string`.",
       ...(req.assignedSimulators?.length
         ? [
             `- Testcat has reserved simulator UDID(s) for this run: ${req.assignedSimulators.map((device) => `${device.name} (${device.udid})`).join(", ")}.`,
