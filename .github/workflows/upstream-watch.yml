@@ -1,0 +1,38 @@
+name: Upstream watch
+
+on:
+  schedule:
+    - cron: "17 6 * * 1" # weekly, Monday 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Report upstream drift
+        id: check
+        run: node scripts/sync-upstream.mjs --check | tee upstream-report.txt
+
+      - name: Open issue for the new upstream version
+        if: steps.check.outputs.behind == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: "Upstream baguette ${{ steps.check.outputs.latest_tag }} released"
+        run: |
+          existing="$(gh issue list --state open --search "in:title \"$TITLE\"" --json title \
+            --jq ".[] | select(.title == \"$TITLE\") | .title")"
+          if [ -n "$existing" ]; then
+            echo "open issue already exists: $TITLE"
+            exit 0
+          fi
+          gh issue create --title "$TITLE" --body-file upstream-report.txt
