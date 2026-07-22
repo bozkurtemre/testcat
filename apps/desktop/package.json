@@ -14,8 +14,8 @@
     "db:migrate": "tsx -e \"import { getStoreDatabase } from './src/main/store/db.ts'; const database = getStoreDatabase(); console.log('migrated ' + database.path); database.sqlite.close();\""
   },
   "dependencies": {
-    "@fontsource-variable/manrope": "^5.2.8",
-    "@fontsource-variable/plus-jakarta-sans": "^5.2.8",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
     "@gsap/react": "^2.1.2",
     "@radix-ui/react-slot": "^1.3.0",
     "@testcat/shared": "workspace:*",
@@ -24,28 +24,28 @@
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.2",
     "gsap": "^3.15.0",
-    "lucide-react": "^1.23.0",
-    "radix-ui": "^1.6.2",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
+    "lucide-react": "^1.25.0",
+    "radix-ui": "^1.6.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.2",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.2.0",
     "drizzle-kit": "^0.31.10",
-    "electron": "^43.1.0",
+    "electron": "^43.2.0",
     "electron-builder": "^26.15.3",
     "electron-vite": "^5.0.0",
     "playwright": "^1.61.1",
-    "tailwindcss": "^4.3.2",
-    "tsx": "^4.23.0",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.1",
     "tw-animate-css": "^1.4.0",
     "typescript": "^6.0.3",
-    "vite": "^7.3.5"
+    "vite": "^7.3.6"
   }
 }
